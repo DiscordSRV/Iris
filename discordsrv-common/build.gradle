@@ -1,0 +1,4 @@
+dependencies {
+    compile 'io.moquette:moquette-broker:0.12'
+    compile 'org.fusesource.mqtt-client:mqtt-client:1.12'
+}

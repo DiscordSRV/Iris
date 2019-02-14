@@ -1,0 +1,4 @@
+name: Discordsrv
+version: Iris-1.0-SNAPSHOT
+main: com.discordsrv.bungee.BungeePlugin
+description: The most powerful, configurable, open-source Discord to Minecraft bridging plugin available.

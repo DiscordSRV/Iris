@@ -1,0 +1,9 @@
+name: DiscordSRV
+version: Iris-1.0-SNAPSHOT
+main: com.discordsrv.bukkit.BukkitPlugin
+api-version: 1.13
+prefix: DiscordSRV
+load: STARTUP
+authors: [Scarsz]
+description: The most powerful, configurable, open-source Discord to Minecraft bridging plugin available.
+website: https://discordsrv.com

@@ -6,4 +6,6 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
     // joor (reflections frontend)
     compile 'org.jooq:joor-java-8:0.9.7'
+    // configurate (config library)
+    compile 'org.spongepowered:configurate-hocon:3.6'
 }

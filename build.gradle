@@ -21,11 +21,15 @@ subprojects {
 
     repositories {
         mavenCentral()
+        jcenter()
         maven {
             name = 'scarsz'
             url = 'https://nexus.scarsz.me/content/groups/public/'
         }
-        jcenter()
+        maven {
+            name = 'sponge'
+            url = 'https://repo.spongepowered.org/maven'
+        }
     }
 
     // "provided" dependency configuration

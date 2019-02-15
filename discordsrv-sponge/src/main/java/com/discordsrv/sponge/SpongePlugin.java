@@ -1,10 +1,12 @@
 package com.discordsrv.sponge;
 
 import com.google.inject.Inject;
-import org.slf4j.Logger;
+import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+
+import java.io.File;
 
 @Plugin(
         id = "discordsrv",
@@ -18,9 +20,16 @@ import org.spongepowered.api.plugin.Plugin;
 public class SpongePlugin {
 
     @Inject
-    private Logger logger;
+    @ConfigDir(sharedRoot = false)
+    private File dataFolder;
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
+
     }
+
+    public File getDataFolder() {
+        return dataFolder;
+    }
+
 }

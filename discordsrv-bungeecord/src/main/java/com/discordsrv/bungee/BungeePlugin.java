@@ -6,7 +6,7 @@ public final class BungeePlugin extends Plugin {
 
     @Override
     public void onEnable() {
-
+        
     }
 
     @Override

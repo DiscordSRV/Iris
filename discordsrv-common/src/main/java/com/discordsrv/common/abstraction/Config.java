@@ -1,5 +1,6 @@
 package com.discordsrv.common.abstraction;
 
+import com.discordsrv.common.localization.Localized;
 import com.google.common.reflect.TypeToken;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -61,13 +62,13 @@ public class Config {
     @ConfigSerializable
     private static class RootCategory {
 
-        @Setting(comment = "Debug options for DiscordSRV. Unless you have a reason to touch these, don't.")
+        @Setting(comment = Localized.CONFIG_DEBUG_CATEGORY.value)
         DebugCategory debug;
 
         @ConfigSerializable
         private static class DebugCategory {
 
-            @Setting(comment = "Debug mode")
+            @Setting(comment = Localized.CONFIG_DEBUG_MODE.value)
             int mode = 0;
 
         }

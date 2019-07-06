@@ -1,6 +1,6 @@
 package com.discordsrv.common;
 
-import com.discordsrv.common.abstraction.Log;
+import com.discordsrv.common.logging.Log;
 
 public enum Platform {
 
@@ -8,18 +8,18 @@ public enum Platform {
     BUNGEE,
     SPONGE;
 
-    public static final Platform platform;
+    public static final Platform PLATFORM;
 
     static {
-        platform = isBukkit()
+        PLATFORM = isBukkit()
                 ? Platform.BUKKIT
                 : isBungee()
                     ? Platform.BUNGEE
                     : isSponge()
                         ? Platform.SPONGE
                         : null;
-        if (platform == null) throw new IllegalStateException("Unable to determine platform type");
-        Log.debug("Platform = " + platform);
+        if (PLATFORM == null) throw new IllegalStateException("Unable to determine platform type");
+        Log.debug("Platform = " + PLATFORM);
     }
 
     private static boolean isBukkit() {

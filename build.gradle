@@ -55,4 +55,5 @@ subprojects {
         // remove duplicate classes if introduced
         jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
+    
 }

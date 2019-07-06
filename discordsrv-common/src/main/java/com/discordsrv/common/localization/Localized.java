@@ -38,7 +38,7 @@ public class Localized {
         public final String value = "[Language not loaded]";
 
         private Definition localize(Language language, String definition) {
-            definitions.put(Language.ENGLISH, definition);
+            definitions.put(language, definition);
             if (language == Language.getSelected()) update();
             return this;
         }

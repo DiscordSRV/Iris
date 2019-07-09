@@ -27,4 +27,10 @@ public class PlayerImpl implements com.discordsrv.common.abstracted.Player {
         return player.getUniqueId();
     }
 
+    @Override
+    public boolean isVanished() {
+        //TODO
+        return false;
+    }
+
 }

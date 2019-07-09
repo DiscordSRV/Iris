@@ -14,6 +14,8 @@ public final class BukkitPlugin extends JavaPlugin implements Logger {
 
     @Override
     public void onEnable() {
+        Log.use(this);
+
         srv = new Builder()
                 .usingPluginManager(new PluginManagerImpl())
                 .usingServer(new ServerImpl())

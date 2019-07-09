@@ -7,5 +7,6 @@ public interface Player {
     String getName();
     String getDisplayName();
     UUID getUuid();
+    boolean isVanished();
 
 }

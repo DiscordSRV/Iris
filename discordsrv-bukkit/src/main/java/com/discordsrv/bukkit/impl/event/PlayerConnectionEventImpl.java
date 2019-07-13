@@ -45,7 +45,7 @@ public class PlayerConnectionEventImpl extends CancelableEvent implements Player
 
     @Override
     public boolean isFirstTime() {
-        return player.hasPlayedBefore();
+        return !player.hasPlayedBefore();
     }
 
     @Override

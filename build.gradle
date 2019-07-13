@@ -44,10 +44,6 @@ subprojects {
             name = 'scarsz'
             url = 'https://nexus.scarsz.me/content/groups/public/'
         }
-        maven {
-            name = 'sponge'
-            url = 'https://repo.spongepowered.org/maven'
-        }
     }
 
     // "provided" dependency configuration

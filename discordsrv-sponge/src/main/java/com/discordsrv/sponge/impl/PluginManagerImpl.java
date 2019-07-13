@@ -37,7 +37,9 @@ public class PluginManagerImpl implements PluginManager {
 
     @Override
     public boolean pluginIsEnabled(String name, boolean caseInsensitive) {
-        return true; //TODO?
+        // plugin ids are always lowercase
+        // and are always 'enabled', so we just check if it's on the server at all
+        return Sponge.getPluginManager().isLoaded(name.toLowerCase());
     }
 
     @Override

@@ -20,7 +20,7 @@ package com.discordsrv.common.api.event;
 
 import com.discordsrv.common.api.Cancelable;
 
-public class CancelableEvent implements Cancelable {
+public abstract class CancelableEvent implements Cancelable {
 
     private boolean canceled = false;
 

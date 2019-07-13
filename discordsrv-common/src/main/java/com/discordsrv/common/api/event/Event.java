@@ -16,31 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common;
+package com.discordsrv.common.api.event;
 
-import com.discordsrv.common.abstracted.PluginManager;
-import com.discordsrv.common.abstracted.Server;
-
-public class Builder {
-
-    private PluginManager pluginManager;
-    private Server server;
-
-    public Builder usingPluginManager(PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
-        return this;
-    }
-
-    public Builder usingServer(Server server) {
-        this.server = server;
-        return this;
-    }
-
-    public DiscordSRV build() {
-        return new DiscordSRV(
-                this.pluginManager,
-                this.server
-        );
-    }
-
-}
+/**
+ * <p>The superclass of all DiscordSRV events</p>
+ * <p>It's not recommended but if you want to receive literally every DiscordSRV API event, subscribing to this would accomplish that.</p>
+ */
+public interface Event {}

@@ -16,31 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common;
+package com.discordsrv.common.api.event;
 
-import com.discordsrv.common.abstracted.PluginManager;
-import com.discordsrv.common.abstracted.Server;
+import com.discordsrv.common.api.Cancelable;
 
-public class Builder {
+public class CancelableEvent implements Cancelable {
 
-    private PluginManager pluginManager;
-    private Server server;
+    private boolean canceled = false;
 
-    public Builder usingPluginManager(PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
-        return this;
+    @Override
+    public void cancel() {
+        this.canceled = true;
     }
 
-    public Builder usingServer(Server server) {
-        this.server = server;
-        return this;
+    @Override
+    public void uncancel() {
+        this.canceled = false;
     }
 
-    public DiscordSRV build() {
-        return new DiscordSRV(
-                this.pluginManager,
-                this.server
-        );
+    @Override
+    public boolean isCanceled() {
+        return canceled;
     }
 
 }

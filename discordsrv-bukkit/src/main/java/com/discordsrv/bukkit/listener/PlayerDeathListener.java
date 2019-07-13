@@ -16,31 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common;
+package com.discordsrv.bukkit.listener;
 
-import com.discordsrv.common.abstracted.PluginManager;
-import com.discordsrv.common.abstracted.Server;
+import com.discordsrv.bukkit.impl.event.PlayerDeathEventImpl;
+import com.discordsrv.common.DiscordSRV;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
-public class Builder {
+public class PlayerDeathListener implements Listener {
 
-    private PluginManager pluginManager;
-    private Server server;
-
-    public Builder usingPluginManager(PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
-        return this;
-    }
-
-    public Builder usingServer(Server server) {
-        this.server = server;
-        return this;
-    }
-
-    public DiscordSRV build() {
-        return new DiscordSRV(
-                this.pluginManager,
-                this.server
-        );
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        DiscordSRV.get().getEventBus().publish(new PlayerDeathEventImpl(event));
     }
 
 }

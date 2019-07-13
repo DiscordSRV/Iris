@@ -16,31 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common;
+package com.discordsrv.bukkit.impl.event;
 
-import com.discordsrv.common.abstracted.PluginManager;
-import com.discordsrv.common.abstracted.Server;
+import com.discordsrv.bukkit.impl.PlayerImpl;
+import com.discordsrv.common.api.event.CancelableEvent;
+import com.discordsrv.common.api.event.PlayerDeathEvent;
 
-public class Builder {
+public class PlayerDeathEventImpl extends CancelableEvent implements PlayerDeathEvent {
 
-    private PluginManager pluginManager;
-    private Server server;
+    private final org.bukkit.event.entity.PlayerDeathEvent event;
 
-    public Builder usingPluginManager(PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
-        return this;
+    public PlayerDeathEventImpl(org.bukkit.event.entity.PlayerDeathEvent player) {
+        this.event = player;
     }
 
-    public Builder usingServer(Server server) {
-        this.server = server;
-        return this;
+    @Override
+    public String getMessage() {
+        return event.getDeathMessage();
     }
 
-    public DiscordSRV build() {
-        return new DiscordSRV(
-                this.pluginManager,
-                this.server
-        );
+    @Override
+    public com.discordsrv.common.abstracted.Player getPlayer() {
+        return PlayerImpl.get(event.getEntity()).orElseThrow(() -> new RuntimeException("PlayerDeathEvent has null player"));
     }
 
 }

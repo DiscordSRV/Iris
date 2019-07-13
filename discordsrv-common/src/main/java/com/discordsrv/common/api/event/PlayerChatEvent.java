@@ -16,31 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common;
+package com.discordsrv.common.api.event;
 
-import com.discordsrv.common.abstracted.PluginManager;
-import com.discordsrv.common.abstracted.Server;
+import com.discordsrv.common.api.Cancelable;
 
-public class Builder {
+public interface PlayerChatEvent extends Cancelable, PlayerEvent {
 
-    private PluginManager pluginManager;
-    private Server server;
-
-    public Builder usingPluginManager(PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
-        return this;
-    }
-
-    public Builder usingServer(Server server) {
-        this.server = server;
-        return this;
-    }
-
-    public DiscordSRV build() {
-        return new DiscordSRV(
-                this.pluginManager,
-                this.server
-        );
-    }
+    String getChannel();
+    String getMessage();
 
 }

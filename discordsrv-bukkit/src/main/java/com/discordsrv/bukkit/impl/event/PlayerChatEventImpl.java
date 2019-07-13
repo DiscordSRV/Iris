@@ -16,39 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.sponge.impl;
+package com.discordsrv.bukkit.impl.event;
 
+import com.discordsrv.bukkit.impl.PlayerImpl;
 import com.discordsrv.common.abstracted.Player;
-import org.spongepowered.api.data.key.Keys;
+import com.discordsrv.common.api.event.CancelableEvent;
+import com.discordsrv.common.api.event.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.util.UUID;
+public class PlayerChatEventImpl extends CancelableEvent implements PlayerChatEvent {
 
-public class PlayerImpl implements Player {
+    private final AsyncPlayerChatEvent event;
+    private final String channel;
 
-    private final org.spongepowered.api.entity.living.player.Player player;
-
-    public PlayerImpl(org.spongepowered.api.entity.living.player.Player player) {
-        this.player = player;
+    public PlayerChatEventImpl(AsyncPlayerChatEvent event, String channel) {
+        this.event = event;
+        this.channel = channel;
     }
 
     @Override
-    public String getName() {
-        return player.getName();
+    public String getChannel() {
+        return channel;
     }
 
     @Override
-    public String getDisplayName() {
-        return player.getDisplayNameData().displayName().get().toPlain();
+    public String getMessage() {
+        return event.getMessage();
     }
 
     @Override
-    public UUID getUuid() {
-        return player.getUniqueId();
-    }
-
-    @Override
-    public boolean isVanished() {
-        return player.get(Keys.VANISH).orElse(false);
+    public Player getPlayer() {
+        return PlayerImpl.get(event.getPlayer()).orElseThrow(() -> new RuntimeException("PlayerChatEvent has null player"));
     }
 
 }

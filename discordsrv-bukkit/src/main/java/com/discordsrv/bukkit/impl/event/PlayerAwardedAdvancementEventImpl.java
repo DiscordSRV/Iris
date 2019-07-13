@@ -16,39 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.sponge.impl;
+package com.discordsrv.bukkit.impl.event;
 
-import com.discordsrv.common.abstracted.Player;
-import org.spongepowered.api.data.key.Keys;
+import com.discordsrv.bukkit.impl.PlayerImpl;
+import com.discordsrv.common.api.event.CancelableEvent;
+import com.discordsrv.common.api.event.PlayerAwardedEvent;
+import org.bukkit.entity.Player;
 
-import java.util.UUID;
+public class PlayerAwardedAdvancementEventImpl extends CancelableEvent implements PlayerAwardedEvent {
 
-public class PlayerImpl implements Player {
+    private final String advancement;
+    private final Player player;
 
-    private final org.spongepowered.api.entity.living.player.Player player;
-
-    public PlayerImpl(org.spongepowered.api.entity.living.player.Player player) {
+    public PlayerAwardedAdvancementEventImpl(String advancement, Player player) {
+        this.advancement = advancement;
         this.player = player;
     }
 
     @Override
-    public String getName() {
-        return player.getName();
+    public String getAward() {
+        return advancement;
     }
 
     @Override
-    public String getDisplayName() {
-        return player.getDisplayNameData().displayName().get().toPlain();
-    }
-
-    @Override
-    public UUID getUuid() {
-        return player.getUniqueId();
-    }
-
-    @Override
-    public boolean isVanished() {
-        return player.get(Keys.VANISH).orElse(false);
+    public com.discordsrv.common.abstracted.Player getPlayer() {
+        return PlayerImpl.get(player).orElseThrow(() -> new RuntimeException("PlayerAwardedAdvancementEvent has null player"));
     }
 
 }

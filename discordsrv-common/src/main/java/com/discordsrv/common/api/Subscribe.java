@@ -16,31 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common;
+package com.discordsrv.common.api;
 
-import com.discordsrv.common.abstracted.PluginManager;
-import com.discordsrv.common.abstracted.Server;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Method;
 
-public class Builder {
+/**
+ * <p>Marks a {@link Method} as one that should receive DiscordSRV API events</p>
+ * <p>Functionally identical to Bukkit's EventHandler annotation</p>
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Subscribe {
 
-    private PluginManager pluginManager;
-    private Server server;
-
-    public Builder usingPluginManager(PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
-        return this;
-    }
-
-    public Builder usingServer(Server server) {
-        this.server = server;
-        return this;
-    }
-
-    public DiscordSRV build() {
-        return new DiscordSRV(
-                this.pluginManager,
-                this.server
-        );
-    }
+    /**
+     * The priority of which the event should be ran. Multiple listeners with the same priority will be ran haphazardly.
+     * @return the priority of the event listener method
+     */
+    ListenerPriority priority() default ListenerPriority.NORMAL;
 
 }

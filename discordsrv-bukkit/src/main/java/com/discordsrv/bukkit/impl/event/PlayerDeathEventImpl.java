@@ -21,18 +21,22 @@ package com.discordsrv.bukkit.impl.event;
 import com.discordsrv.bukkit.impl.PlayerImpl;
 import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerDeathEvent;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 public class PlayerDeathEventImpl extends CancelableEvent implements PlayerDeathEvent {
 
     private final org.bukkit.event.entity.PlayerDeathEvent event;
+    private final Component message;
 
     public PlayerDeathEventImpl(org.bukkit.event.entity.PlayerDeathEvent player) {
         this.event = player;
+        this.message = LegacyComponentSerializer.INSTANCE.deserialize(event.getDeathMessage());
     }
 
     @Override
-    public String getMessage() {
-        return event.getDeathMessage();
+    public Component getMessage() {
+        return message;
     }
 
     @Override

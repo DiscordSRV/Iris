@@ -22,16 +22,20 @@ import com.discordsrv.bukkit.impl.PlayerImpl;
 import com.discordsrv.common.abstracted.Player;
 import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerChatEvent;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class PlayerChatEventImpl extends CancelableEvent implements PlayerChatEvent {
 
     private final AsyncPlayerChatEvent event;
     private final String channel;
+    private final Component message;
 
     public PlayerChatEventImpl(AsyncPlayerChatEvent event, String channel) {
         this.event = event;
         this.channel = channel;
+        this.message = LegacyComponentSerializer.INSTANCE.deserialize(event.getMessage());
     }
 
     @Override
@@ -40,8 +44,8 @@ public class PlayerChatEventImpl extends CancelableEvent implements PlayerChatEv
     }
 
     @Override
-    public String getMessage() {
-        return event.getMessage();
+    public Component getMessage() {
+        return message;
     }
 
     @Override

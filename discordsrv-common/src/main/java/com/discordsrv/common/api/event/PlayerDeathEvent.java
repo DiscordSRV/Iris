@@ -19,9 +19,10 @@
 package com.discordsrv.common.api.event;
 
 import com.discordsrv.common.api.Cancelable;
+import net.kyori.text.Component;
 
 public interface PlayerDeathEvent extends Cancelable, PlayerEvent {
 
-    String getMessage();
+    Component getMessage();
 
 }

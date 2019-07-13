@@ -19,10 +19,11 @@
 package com.discordsrv.common.api.event;
 
 import com.discordsrv.common.api.Cancelable;
+import net.kyori.text.Component;
 
 public interface PlayerChatEvent extends Cancelable, PlayerEvent {
 
     String getChannel();
-    String getMessage();
+    Component getMessage();
 
 }

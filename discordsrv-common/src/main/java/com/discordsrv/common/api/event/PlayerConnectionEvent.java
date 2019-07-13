@@ -19,11 +19,12 @@
 package com.discordsrv.common.api.event;
 
 import com.discordsrv.common.api.Cancelable;
+import net.kyori.text.Component;
 
 public interface PlayerConnectionEvent extends Cancelable, PlayerEvent {
 
     boolean isFirstTime();
-    String getMessage();
+    Component getMessage();
     State getState();
 
     enum State {

@@ -22,24 +22,26 @@ import com.discordsrv.bukkit.impl.PlayerImpl;
 import com.discordsrv.common.abstracted.Player;
 import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerConnectionEvent;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerConnectionEventImpl extends CancelableEvent implements PlayerConnectionEvent {
 
     private final org.bukkit.entity.Player player;
-    private final String message;
+    private final net.kyori.text.Component message;
     private final State state;
 
     public PlayerConnectionEventImpl(PlayerJoinEvent event) {
         this.player = event.getPlayer();
-        this.message = event.getJoinMessage();
+        this.message = LegacyComponentSerializer.INSTANCE.deserialize(event.getJoinMessage());
         this.state = State.JOIN;
     }
 
     public PlayerConnectionEventImpl(PlayerQuitEvent event) {
         this.player = event.getPlayer();
-        this.message = event.getQuitMessage();
+        this.message = LegacyComponentSerializer.INSTANCE.deserialize(event.getQuitMessage());
         this.state = State.QUIT;
     }
 
@@ -49,7 +51,7 @@ public class PlayerConnectionEventImpl extends CancelableEvent implements Player
     }
 
     @Override
-    public String getMessage() {
+    public Component getMessage() {
         return message;
     }
 

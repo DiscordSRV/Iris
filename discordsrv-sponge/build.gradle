@@ -17,12 +17,26 @@
  */
 
 plugins {
-    id 'org.spongepowered.plugin' version '0.8.1'
+    id 'org.spongepowered.plugin' version '0.8.2'
+}
+
+repositories {
+    maven {
+        name = 'sponge'
+        url = 'https://repo.spongepowered.org/maven'
+    }
 }
 
 dependencies {
     compile project(':discordsrv-common')
-    compile 'org.spongepowered:spongeapi:7.0.0'
+
+    // gradle doesn't like 2 different versions of the same dependency, so we have to trick it (to support v6 as well as v7)
+    compile 'org.spongepowered:plugin-meta:0.4.1' // required so gradle creates the meta file properly
+    compile 'org.spongepowered:spongeapi:7.1.0'
+    compile 'com.github.SpongePowered:SpongeAPI:v6.0.0:shaded'
+
+    // kyori text adapter
+    compile 'net.kyori:text-adapter-spongeapi:3.0.3'
 }
 
 sponge.plugin.id = pluginId

@@ -29,8 +29,10 @@ import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.scheduler.SpongeExecutorService;
 
 import java.io.File;
 
@@ -54,8 +56,10 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
 
     private DiscordSRV srv;
 
+    private SpongeExecutorService asyncExecutor;
+
     @Listener
-    public void onServerStart(GameStartedServerEvent event) {
+    public void onGamePreInit(GamePreInitializationEvent event) {
         Log.use(this);
 
         srv = new Builder()
@@ -63,10 +67,12 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
                 .usingServer(new ServerImpl())
                 .build();
 
+        asyncExecutor = Sponge.getScheduler().createAsyncExecutor(this);
+
         Sponge.getEventManager().registerListeners(this, new ChatListener());
     }
 
-    public SpongePlugin get() {
+    public static SpongePlugin get() {
         return (SpongePlugin) Sponge.getPluginManager()
                 .getPlugin("discordsrv").orElseThrow(RuntimeException::new)
                 .getInstance().orElseThrow(RuntimeException::new);
@@ -76,6 +82,9 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
     }
     public DiscordSRV getSrv() {
         return srv;
+    }
+    public SpongeExecutorService getAsyncExecutor() {
+        return asyncExecutor;
     }
 
     @Override
@@ -91,7 +100,11 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
                 logger.error(message);
                 break;
             case DEBUG:
-                logger.info("[DEBUG] " + message);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(message);
+                } else {
+                    logger.info("[DEBUG] " + message);
+                }
                 break;
         }
     }

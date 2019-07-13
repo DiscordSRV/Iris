@@ -19,6 +19,15 @@
 dependencies {
     // apache commons
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+
     // joor (reflections frontend)
     compile 'org.jooq:joor-java-8:0.9.7'
+
+    // kyori text
+    compile 'net.kyori:text-api:3.0.0'
+    compile 'net.kyori:text-serializer-legacy:3.0.0'
+    compile 'net.kyori:text-serializer-gson:3.0.0'
+
+    // MCDiscordReserializer
+    compile 'com.github.Vankka:MCDiscordReserializer:-b00bafd9c6-1'
 }

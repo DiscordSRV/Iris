@@ -45,8 +45,8 @@ subprojects {
             url = 'https://nexus.scarsz.me/content/groups/public/'
         }
         maven {
-            name = 'sponge'
-            url = 'https://repo.spongepowered.org/maven'
+            name = 'jitpack'
+            url = 'https://jitpack.io'
         }
     }
 

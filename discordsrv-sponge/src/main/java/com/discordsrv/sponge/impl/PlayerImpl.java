@@ -19,7 +19,11 @@
 package com.discordsrv.sponge.impl;
 
 import com.discordsrv.common.abstracted.Player;
+import net.kyori.text.Component;
+import net.kyori.text.adapter.spongeapi.TextAdapter;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.UUID;
 
@@ -37,8 +41,8 @@ public class PlayerImpl implements Player {
     }
 
     @Override
-    public String getDisplayName() {
-        return player.getDisplayNameData().displayName().get().toPlain();
+    public Component getDisplayName() {
+        return GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(player.getDisplayNameData().displayName().get()));
     }
 
     @Override
@@ -49,6 +53,11 @@ public class PlayerImpl implements Player {
     @Override
     public boolean isVanished() {
         return player.get(Keys.VANISH).orElse(false);
+    }
+
+    @Override
+    public void sendMessage(Component component) {
+        TextAdapter.sendComponent(player, component);
     }
 
 }

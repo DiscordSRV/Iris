@@ -18,13 +18,16 @@
 
 package com.discordsrv.common.abstracted;
 
+import net.kyori.text.Component;
+
 import java.util.UUID;
 
 public interface Player {
 
     String getName();
-    String getDisplayName();
+    Component getDisplayName();
     UUID getUuid();
     boolean isVanished();
+    void sendMessage(Component component);
 
 }

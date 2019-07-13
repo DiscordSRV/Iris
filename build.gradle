@@ -44,6 +44,10 @@ subprojects {
             name = 'scarsz'
             url = 'https://nexus.scarsz.me/content/groups/public/'
         }
+        maven {
+            name = 'jitpack'
+            url = 'https://jitpack.io'
+        }
     }
 
     // "provided" dependency configuration

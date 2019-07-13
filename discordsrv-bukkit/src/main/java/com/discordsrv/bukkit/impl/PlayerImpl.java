@@ -20,6 +20,9 @@ package com.discordsrv.bukkit.impl;
 
 import com.discordsrv.common.abstracted.Player;
 import com.discordsrv.common.logging.Log;
+import net.kyori.text.Component;
+import net.kyori.text.adapter.bukkit.TextAdapter;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 
@@ -92,8 +95,8 @@ public class PlayerImpl implements Player {
     }
 
     @Override
-    public String getDisplayName() {
-        return player.getDisplayName();
+    public Component getDisplayName() {
+        return LegacyComponentSerializer.INSTANCE.deserialize(player.getDisplayName());
     }
 
     @Override
@@ -107,4 +110,8 @@ public class PlayerImpl implements Player {
         return false;
     }
 
+    @Override
+    public void sendMessage(Component component) {
+        TextAdapter.sendComponent(player, component);
+    }
 }

@@ -25,10 +25,6 @@ repositories {
         name = 'sponge'
         url = 'https://repo.spongepowered.org/maven'
     }
-    maven {
-        name = 'jitpack'
-        url = 'https://jitpack.io'
-    }
 }
 
 dependencies {
@@ -38,6 +34,9 @@ dependencies {
     compile 'org.spongepowered:plugin-meta:0.4.1' // required so gradle creates the meta file properly
     compile 'org.spongepowered:spongeapi:7.1.0'
     compile 'com.github.SpongePowered:SpongeAPI:v6.0.0:shaded'
+
+    // kyori text adapter
+    compile 'net.kyori:text-adapter-spongeapi:3.0.3'
 }
 
 sponge.plugin.id = pluginId

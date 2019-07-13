@@ -31,13 +31,6 @@ import java.util.stream.Collectors;
 @SuppressWarnings("deprecation")
 public class PlayerAchievementListener implements Listener {
 
-    public PlayerAchievementListener() {
-        if (PlayerAchievementAwardedEvent.class.isAnnotationPresent(Deprecated.class)) {
-            throw new RuntimeException("Achievements are deprecated on this server version, " +
-                    "the advancement listener should be used instead");
-        }
-    }
-
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerAchievementAwarded(PlayerAchievementAwardedEvent event) {
         if (event.getAchievement() == null) return;

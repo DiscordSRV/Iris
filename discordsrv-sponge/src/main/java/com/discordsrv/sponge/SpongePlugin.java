@@ -35,6 +35,7 @@ import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.scheduler.SpongeExecutorService;
 
@@ -84,19 +85,9 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
         Sponge.getEventManager().registerListeners(this, new PlayerDeathListener());
     }
 
-    public static SpongePlugin get() {
-        return (SpongePlugin) Sponge.getPluginManager()
-                .getPlugin("discordsrv").orElseThrow(RuntimeException::new)
-                .getInstance().orElseThrow(RuntimeException::new);
-    }
-    public File getDataFolder() {
-        return dataFolder;
-    }
-    public DiscordSRV getSrv() {
-        return srv;
-    }
-    public SpongeExecutorService getAsyncExecutor() {
-        return asyncExecutor;
+    @Listener
+    public void onStopped(GameStoppedServerEvent event) {
+        srv.shutdown();
     }
 
     @Override
@@ -121,4 +112,17 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
         }
     }
 
+    public File getDataFolder() {
+        return dataFolder;
+    }
+
+    public SpongeExecutorService getAsyncExecutor() {
+        return asyncExecutor;
+    }
+
+    public static SpongePlugin get() {
+        return (SpongePlugin) Sponge.getPluginManager()
+                .getPlugin("discordsrv").orElseThrow(RuntimeException::new)
+                .getInstance().orElseThrow(RuntimeException::new);
+    }
 }

@@ -58,12 +58,7 @@ public class PluginManagerImpl implements PluginManager {
                 })
                 .findFirst();
 
-        if (optionalPlugin.isPresent()) {
-            Plugin plugin = (Plugin) optionalPlugin.get();
-            return Optional.of(plugin);
-        } else {
-            return Optional.empty();
-        }
+        return optionalPlugin.map(plugin -> (Plugin) plugin);
     }
 
     @Override

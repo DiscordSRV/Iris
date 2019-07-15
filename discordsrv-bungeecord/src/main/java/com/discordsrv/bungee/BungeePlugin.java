@@ -18,20 +18,34 @@
 
 package com.discordsrv.bungee;
 
+import com.discordsrv.bungee.impl.PluginManagerImpl;
+import com.discordsrv.bungee.impl.ServerImpl;
+import com.discordsrv.common.Builder;
+import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.logging.Log;
 import com.discordsrv.common.logging.Logger;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public final class BungeePlugin extends Plugin implements Logger {
 
+    private DiscordSRV srv;
+
     @Override
     public void onEnable() {
         Log.use(this);
+
+        srv = new Builder()
+                .usingPluginManager(new PluginManagerImpl())
+                .usingServer(new ServerImpl())
+                .build();
+
+        // TODO: events
     }
 
     @Override
     public void onDisable() {
-
+        srv.shutdown();
     }
 
     @Override
@@ -52,4 +66,7 @@ public final class BungeePlugin extends Plugin implements Logger {
         }
     }
 
+    public static BungeePlugin get() {
+        return (BungeePlugin) ProxyServer.getInstance().getPluginManager().getPlugin("DiscordSRV");
+    }
 }

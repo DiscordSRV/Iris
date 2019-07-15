@@ -29,7 +29,7 @@ public class PlayerConnectionListener {
         if (channel.isPresent()) {
             DiscordSRV.get().getEventBus().publish(new PlayerConnectionEventImpl(event));
         } else {
-            Log.debug("Received a leave message with no channel present");
+            Log.debug("Received a " + (event instanceof ClientConnectionEvent.Join ? "join" : "leave") + " message with no channel present");
         }
     }
 }

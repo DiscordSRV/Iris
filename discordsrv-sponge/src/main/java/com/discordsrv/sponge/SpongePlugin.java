@@ -24,6 +24,10 @@ import com.discordsrv.common.logging.Log;
 import com.discordsrv.sponge.impl.PluginManagerImpl;
 import com.discordsrv.sponge.impl.ServerImpl;
 import com.discordsrv.sponge.listener.ChatListener;
+import com.discordsrv.sponge.listener.PlayerConnectionListener;
+import com.discordsrv.sponge.listener.PlayerDeathListener;
+import com.discordsrv.sponge.listener.award.PlayerAchievementListener;
+import com.discordsrv.sponge.listener.award.PlayerAdvancementListener;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -69,7 +73,15 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
 
         asyncExecutor = Sponge.getScheduler().createAsyncExecutor(this);
 
+        try {
+            Class.forName("org.spongepowered.api.event.advancement.AdvancementEvent");
+            Sponge.getEventManager().registerListeners(this, new PlayerAdvancementListener());
+        } catch (ClassNotFoundException ignored) {
+            Sponge.getEventManager().registerListeners(this, new PlayerAchievementListener());
+        }
         Sponge.getEventManager().registerListeners(this, new ChatListener());
+        Sponge.getEventManager().registerListeners(this, new PlayerConnectionListener());
+        Sponge.getEventManager().registerListeners(this, new PlayerDeathListener());
     }
 
     public static SpongePlugin get() {

@@ -29,5 +29,5 @@ dependencies {
     compile 'net.kyori:text-serializer-gson:3.0.0'
 
     // MCDiscordReserializer
-    compile 'com.github.Vankka:MCDiscordReserializer:-b00bafd9c6-1'
+    compile 'me.vankka:MCDiscordReserializer:1.0'
 }

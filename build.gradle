@@ -56,8 +56,7 @@ subprojects {
         // add dependencies to artifact
         from {
             (configurations.runtime - configurations.provided).collect {
-                if (it.getName().contains('Friends')) it
-                it.isDirectory() ? it : zipTree(it)
+                it.getName().endsWith('.jar') || it.getName().endsWith('.zip') ? zipTree(it) : it
             }
         } {
             // exclude meta-inf signatures

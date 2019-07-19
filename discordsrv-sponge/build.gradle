@@ -32,7 +32,7 @@ dependencies {
 
     // gradle doesn't like 2 different versions of the same dependency, so we have to trick it (to support v6 as well as v7)
     compile 'org.spongepowered:spongeapi:7.1.0'
-    compile 'org.spongepowered:spongeapi6:6.0.0:shaded' // from Scarsz' nexus
+    compile 'org.spongepowered:spongeapi6:6.0.0' // from Scarsz' nexus
 
     // kyori text adapter
     compile 'net.kyori:text-adapter-spongeapi:3.0.3'

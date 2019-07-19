@@ -31,8 +31,6 @@ dependencies {
     
     // kyori text
     compile 'net.kyori:text-api:3.0.0'
-    compile 'net.kyori:text-serializer-legacy:3.0.0'
-    compile 'net.kyori:text-serializer-gson:3.0.0'
 
     // MCDiscordReserializer
     compile 'me.vankka:MCDiscordReserializer:1.0'

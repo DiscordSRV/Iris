@@ -23,6 +23,12 @@ dependencies {
     // joor (reflections frontend)
     compile 'org.jooq:joor-java-8:0.9.7'
 
+    // JDA (discord library)
+    compile 'net.dv8tion:JDA:4.BETA.0_24'
+
+    // discord-webhooks
+    compile 'club.minnced:discord-webhooks:0.1.7'
+    
     // kyori text
     compile 'net.kyori:text-api:3.0.0'
     compile 'net.kyori:text-serializer-legacy:3.0.0'

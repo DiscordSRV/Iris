@@ -22,6 +22,14 @@ import com.discordsrv.common.abstracted.PluginManager;
 import com.discordsrv.common.abstracted.Server;
 import com.discordsrv.common.api.EventBus;
 import com.discordsrv.common.listener.PlayerChatListener;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.utils.Compression;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import okhttp3.OkHttpClient;
+
+import javax.security.auth.login.LoginException;
+import java.util.concurrent.TimeUnit;
 
 public class DiscordSRV {
 
@@ -31,11 +39,25 @@ public class DiscordSRV {
     private final PluginManager pluginManager;
     private final Server server;
 
-    DiscordSRV(PluginManager pluginManager, Server server) {
+    private final OkHttpClient httpClient;
+    private final JDA jda;
+
+    DiscordSRV(PluginManager pluginManager, Server server) throws LoginException {
         DiscordSRV.INSTANCE = this;
         this.eventBus = new EventBus();
         this.pluginManager = pluginManager;
         this.server = server;
+
+        this.httpClient = new OkHttpClient.Builder()
+                // more lenient timeouts for slow networks (these 3 are 10 seconds by default)
+                .connectTimeout(45, TimeUnit.SECONDS)
+                .readTimeout(45, TimeUnit.SECONDS)
+                .writeTimeout(45, TimeUnit.SECONDS)
+                .build();
+
+        this.jda = new JDABuilder()
+                .setHttpClient(httpClient)
+                .build();
 
         registerListeners();
     }
@@ -64,4 +86,11 @@ public class DiscordSRV {
         return server;
     }
 
+    public OkHttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    public JDA getJda() {
+        return jda;
+    }
 }

@@ -28,7 +28,7 @@ dependencies {
 
     // discord-webhooks
     compile 'club.minnced:discord-webhooks:0.1.7'
-    
+
     // kyori text
     compile 'net.kyori:text-api:3.0.0'
 

@@ -27,6 +27,8 @@ import com.discordsrv.common.logging.Logger;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
+import javax.security.auth.login.LoginException;
+
 public final class BungeePlugin extends Plugin implements Logger {
 
     private DiscordSRV srv;
@@ -35,10 +37,16 @@ public final class BungeePlugin extends Plugin implements Logger {
     public void onEnable() {
         Log.use(this);
 
-        srv = new Builder()
-                .usingPluginManager(new PluginManagerImpl())
-                .usingServer(new ServerImpl())
-                .build();
+        try {
+            srv = new Builder()
+                    .usingPluginManager(new PluginManagerImpl())
+                    .usingServer(new ServerImpl())
+                    .build();
+        } catch (LoginException e) {
+            getLogger().severe("Failed to login to Discord");
+            e.printStackTrace();
+            return;
+        }
 
         // TODO: events
     }

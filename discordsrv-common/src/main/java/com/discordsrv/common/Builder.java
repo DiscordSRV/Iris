@@ -21,6 +21,8 @@ package com.discordsrv.common;
 import com.discordsrv.common.abstracted.PluginManager;
 import com.discordsrv.common.abstracted.Server;
 
+import javax.security.auth.login.LoginException;
+
 public class Builder {
 
     private PluginManager pluginManager;
@@ -36,7 +38,7 @@ public class Builder {
         return this;
     }
 
-    public DiscordSRV build() {
+    public DiscordSRV build() throws LoginException {
         return new DiscordSRV(
                 this.pluginManager,
                 this.server

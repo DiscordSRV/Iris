@@ -38,6 +38,7 @@ import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.scheduler.SpongeExecutorService;
 
+import javax.security.auth.login.LoginException;
 import java.io.File;
 
 @Plugin(
@@ -66,10 +67,16 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
     public void onGamePreInit(GamePreInitializationEvent event) {
         Log.use(this);
 
-        srv = new Builder()
-                .usingPluginManager(new PluginManagerImpl())
-                .usingServer(new ServerImpl())
-                .build();
+        try {
+            srv = new Builder()
+                    .usingPluginManager(new PluginManagerImpl())
+                    .usingServer(new ServerImpl())
+                    .build();
+        } catch (LoginException e) {
+            logger.error("Failed to login to Discord");
+            e.printStackTrace();
+            return;
+        }
 
         asyncExecutor = Sponge.getScheduler().createAsyncExecutor(this);
 

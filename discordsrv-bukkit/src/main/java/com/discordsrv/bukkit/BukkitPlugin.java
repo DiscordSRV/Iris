@@ -33,6 +33,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.security.auth.login.LoginException;
+
 public final class BukkitPlugin extends JavaPlugin implements Logger {
 
     private DiscordSRV srv;
@@ -41,10 +43,16 @@ public final class BukkitPlugin extends JavaPlugin implements Logger {
     public void onEnable() {
         Log.use(this);
 
-        srv = new Builder()
-                .usingPluginManager(new PluginManagerImpl())
-                .usingServer(new ServerImpl())
-                .build();
+        try {
+            srv = new Builder()
+                    .usingPluginManager(new PluginManagerImpl())
+                    .usingServer(new ServerImpl())
+                    .build();
+        } catch (LoginException e) {
+            getLogger().severe("Failed to login to Discord");
+            e.printStackTrace();
+            return;
+        }
 
         //noinspection deprecation
         Bukkit.getPluginManager().registerEvents(

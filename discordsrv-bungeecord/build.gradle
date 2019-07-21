@@ -25,7 +25,8 @@ repositories {
 
 dependencies {
     compile project(':discordsrv-common')
-    compile 'net.md-5:bungeecord-api:1.13-SNAPSHOT'
+
+    provided 'net.md-5:bungeecord-api:1.13-SNAPSHOT'
 
     // kyori text adapter
     compile 'net.kyori:text-adapter-bungeecord:3.0.3'

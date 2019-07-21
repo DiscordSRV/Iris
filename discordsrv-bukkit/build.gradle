@@ -25,7 +25,8 @@ repositories {
 
 dependencies {
     compile project(':discordsrv-common')
-    compile 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
+    
+    provided 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
 
     // kyori text adapter
     compile 'net.kyori:text-adapter-bukkit:3.0.3'

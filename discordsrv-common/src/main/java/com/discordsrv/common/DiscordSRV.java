@@ -25,7 +25,6 @@ import com.discordsrv.common.listener.PlayerChatListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import okhttp3.OkHttpClient;
-import okio.Okio;
 
 import javax.security.auth.login.LoginException;
 import java.util.concurrent.TimeUnit;

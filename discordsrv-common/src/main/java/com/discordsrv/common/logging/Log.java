@@ -36,6 +36,7 @@ public class Log {
                 case INFO:
                 case WARN:
                     System.out.println("[DiscordSRV] [" + level.name() + "]" + message);
+                    break;
                 case ERROR:
                     System.err.println("[DiscordSRV] [ERROR]" + message);
                     break;

@@ -43,7 +43,7 @@ public class DiscordSRV {
     @Getter private final OkHttpClient httpClient;
     @Getter private final JDA jda;
 
-    @Builder
+    @Builder(builderClassName = "DSRVBuilder")
     DiscordSRV(@NonNull PluginManager pluginManager, @NonNull Server server) throws LoginException {
         DiscordSRV.INSTANCE = this;
         this.eventBus = new EventBus();

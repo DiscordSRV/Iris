@@ -23,7 +23,7 @@ import com.discordsrv.common.abstracted.Player;
 import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerChatEvent;
 import lombok.Getter;
-import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
@@ -31,7 +31,7 @@ public class PlayerChatEventImpl extends CancelableEvent implements PlayerChatEv
 
     private final AsyncPlayerChatEvent rawEvent;
     @Getter private final String channel;
-    @Getter private final Component message;
+    @Getter private final TextComponent message;
 
     public PlayerChatEventImpl(AsyncPlayerChatEvent rawEvent, String channel) {
         this.rawEvent = rawEvent;

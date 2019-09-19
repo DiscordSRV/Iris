@@ -18,5 +18,15 @@
 
 package com.discordsrv.common.listener;
 
+import com.discordsrv.common.api.Subscribe;
+import com.discordsrv.common.api.event.PlayerChatEvent;
+import com.discordsrv.common.logging.Log;
+
 public class PlayerChatListener {
+
+    @Subscribe
+    public void onChat(PlayerChatEvent event) {
+        Log.debug("Received chat event: " + event.getPlayer().getName() + " -> " + event.getChannel() + " > " + event.getMessage().content());
+    }
+
 }

@@ -27,10 +27,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.Parameter;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -76,13 +74,16 @@ public class EventBus {
      * @return the event that was called
      */
     public <E extends Event> E publish(E event) {
+        Class<?> eventType = Arrays.stream(event.getClass().getInterfaces())
+                .filter(Event.class::isAssignableFrom)
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("Can't publish event class " + event.getClass() + ", doesn't implement Event"));
+
         for (ListenerPriority priority : ListenerPriority.values()) {
             for (Object listener : listeners) {
                 for (Method method : listener.getClass().getMethods()) {
                     if (method.getParameters().length == 0) continue; // api listener methods always take at least one parameter
-                    // TODO this probably fails now that events are interfaces instead of classes
                     if (!method.getParameters()[0].getType().isAssignableFrom(event.getClass())) continue; // make sure the event wants this event
-                    if (!method.isAnnotationPresent(Subscribe.class)) continue; // make sure method has a subscribe annotation somewhere
+                    if (!method.isAnnotationPresent(Subscribe.class)) continue; // make sure method has a subscribe annotation
 
                     for (Annotation annotation : method.getAnnotations()) {
                         if (!(annotation instanceof Subscribe)) continue; // go through all the annotations until we get one of ours
@@ -90,20 +91,37 @@ public class EventBus {
                         Subscribe subscribeAnnotation = (Subscribe) annotation;
                         if (subscribeAnnotation.priority() != priority) continue; // this priority isn't being called right now
 
+                        String methodSignature = String.format("%s#%s(%s)",
+                                method.getDeclaringClass().getName(),
+                                method.getName(),
+                                Arrays.stream(method.getParameterTypes())
+                                        .map(Class::getSimpleName)
+                                        .collect(Collectors.joining(", "))
+                        );
+                        Log.debug("Publishing " + eventType.getSimpleName() + " to " + methodSignature);
+
                         // make sure method is accessible
                         if (!method.isAccessible()) method.setAccessible(true);
 
                         List<Object> arguments = new LinkedList<>();
                         arguments.add(event);
-                        for (Class<?> clazz : ArrayUtils.subarray(method.getParameterTypes(), 1, method.getParameterCount() + 1)) {
-                            String thing = clazz.getSimpleName();
+
+                        outer:
+                        for (Parameter parameter : ArrayUtils.subarray(method.getParameters(), 1, method.getParameterCount() + 1)) {
+                            //TODO: be able to specify with a parameter annotation which value to be grabbed
+                            String target = parameter.isNamePresent()
+                                    ? parameter.getName()
+                                    : parameter.getType().getSimpleName();
+
+                            Log.debug("Finding " + target + " to fulfil listener parameter " + arguments.size());
                             for (Method m : event.getClass().getMethods()) {
-                                if (m.getName().equalsIgnoreCase("is" + thing) ||
-                                        m.getName().equalsIgnoreCase("get" + thing)) {
+                                if (m.getName().equalsIgnoreCase("is" + target) ||
+                                        m.getName().equalsIgnoreCase("get" + target)) {
+                                    Log.debug("Using " + m);
                                     m.setAccessible(true);
                                     try {
                                         arguments.add(method.invoke(event));
-                                        continue;
+                                        continue outer;
                                     } catch (IllegalAccessException | InvocationTargetException e) {
                                         Log.debug(
                                                 String.format("Failed to get parameter value for %s#%s: %s",
@@ -114,9 +132,10 @@ public class EventBus {
                                         );
                                     }
                                 }
-
-                                arguments.add(null);
                             }
+
+                            Log.debug("Failed to find matching method, parameter will be null!");
+                            arguments.add(null);
                         }
 
                         try {

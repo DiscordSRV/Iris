@@ -79,7 +79,7 @@ public class EventBus {
         for (ListenerPriority priority : ListenerPriority.values()) {
             for (Object listener : listeners) {
                 for (Method method : listener.getClass().getMethods()) {
-                    if (method.getParameters().length > 1) continue; // api listener methods always take at least one parameter
+                    if (method.getParameters().length == 0) continue; // api listener methods always take at least one parameter
                     // TODO this probably fails now that events are interfaces instead of classes
                     if (!method.getParameters()[0].getType().isAssignableFrom(event.getClass())) continue; // make sure the event wants this event
                     if (!method.isAnnotationPresent(Subscribe.class)) continue; // make sure method has a subscribe annotation somewhere

@@ -21,7 +21,7 @@ public class PlayerConnectionEventImpl extends CancelableEvent implements Player
         this.player = ((TargetPlayerEvent) event).getTargetEntity();
         this.message = GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(((MessageChannelEvent) event).getMessage()));
         this.state = event instanceof ClientConnectionEvent.Join ? State.JOIN : State.QUIT;
-        setCancelled(((MessageChannelEvent) event).isMessageCancelled());
+        setCanceled(((MessageChannelEvent) event).isMessageCancelled());
     }
 
     @Override

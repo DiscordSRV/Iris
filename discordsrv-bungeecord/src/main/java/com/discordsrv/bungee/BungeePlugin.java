@@ -20,7 +20,6 @@ package com.discordsrv.bungee;
 
 import com.discordsrv.bungee.impl.PluginManagerImpl;
 import com.discordsrv.bungee.impl.ServerImpl;
-import com.discordsrv.common.Builder;
 import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.logging.Log;
 import com.discordsrv.common.logging.Logger;
@@ -38,9 +37,9 @@ public final class BungeePlugin extends Plugin implements Logger {
         Log.use(this);
 
         try {
-            srv = new Builder()
-                    .usingPluginManager(new PluginManagerImpl())
-                    .usingServer(new ServerImpl())
+            srv = DiscordSRV.builder()
+                    .pluginManager(new PluginManagerImpl())
+                    .server(new ServerImpl())
                     .build();
         } catch (LoginException e) {
             getLogger().severe("Failed to login to Discord");

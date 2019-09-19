@@ -22,35 +22,26 @@ import com.discordsrv.bukkit.impl.PlayerImpl;
 import com.discordsrv.common.abstracted.Player;
 import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerChatEvent;
+import lombok.Getter;
 import net.kyori.text.Component;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class PlayerChatEventImpl extends CancelableEvent implements PlayerChatEvent {
 
-    private final AsyncPlayerChatEvent event;
-    private final String channel;
-    private final Component message;
+    private final AsyncPlayerChatEvent rawEvent;
+    @Getter private final String channel;
+    @Getter private final Component message;
 
-    public PlayerChatEventImpl(AsyncPlayerChatEvent event, String channel) {
-        this.event = event;
+    public PlayerChatEventImpl(AsyncPlayerChatEvent rawEvent, String channel) {
+        this.rawEvent = rawEvent;
         this.channel = channel;
-        this.message = LegacyComponentSerializer.INSTANCE.deserialize(event.getMessage());
-    }
-
-    @Override
-    public String getChannel() {
-        return channel;
-    }
-
-    @Override
-    public Component getMessage() {
-        return message;
+        this.message = LegacyComponentSerializer.INSTANCE.deserialize(rawEvent.getMessage());
     }
 
     @Override
     public Player getPlayer() {
-        return PlayerImpl.get(event.getPlayer()).orElseThrow(() -> new RuntimeException("PlayerChatEvent has null player"));
+        return PlayerImpl.get(rawEvent.getPlayer()).orElseThrow(() -> new RuntimeException("PlayerChatEvent has null player"));
     }
 
 }

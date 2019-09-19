@@ -21,27 +21,26 @@ package com.discordsrv.bukkit.impl.event;
 import com.discordsrv.bukkit.impl.PlayerImpl;
 import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerDeathEvent;
+import lombok.Getter;
 import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 public class PlayerDeathEventImpl extends CancelableEvent implements PlayerDeathEvent {
 
-    private final org.bukkit.event.entity.PlayerDeathEvent event;
-    private final Component message;
+    @Getter private final org.bukkit.event.entity.PlayerDeathEvent rawEvent;
+    @Getter private final Component message;
 
-    public PlayerDeathEventImpl(org.bukkit.event.entity.PlayerDeathEvent player) {
-        this.event = player;
-        this.message = LegacyComponentSerializer.INSTANCE.deserialize(event.getDeathMessage());
-    }
-
-    @Override
-    public Component getMessage() {
-        return message;
+    public PlayerDeathEventImpl(org.bukkit.event.entity.PlayerDeathEvent rawEvent) {
+        this.rawEvent = rawEvent;
+        this.message = this.rawEvent.getDeathMessage() != null
+                ? LegacyComponentSerializer.INSTANCE.deserialize(this.rawEvent.getDeathMessage())
+                : TextComponent.empty();
     }
 
     @Override
     public com.discordsrv.common.abstracted.Player getPlayer() {
-        return PlayerImpl.get(event.getEntity()).orElseThrow(() -> new RuntimeException("PlayerDeathEvent has null player"));
+        return PlayerImpl.get(rawEvent.getEntity()).orElseThrow(() -> new RuntimeException("PlayerDeathEvent has null player"));
     }
 
 }

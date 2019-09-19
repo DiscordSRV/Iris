@@ -22,6 +22,9 @@ import com.discordsrv.common.abstracted.PluginManager;
 import com.discordsrv.common.abstracted.Server;
 import com.discordsrv.common.api.EventBus;
 import com.discordsrv.common.listener.PlayerChatListener;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import okhttp3.OkHttpClient;
@@ -33,14 +36,15 @@ public class DiscordSRV {
 
     private static DiscordSRV INSTANCE;
 
-    private final EventBus eventBus;
-    private final PluginManager pluginManager;
-    private final Server server;
+    @Getter private final EventBus eventBus;
+    @Getter private final PluginManager pluginManager;
+    @Getter private final Server server;
 
-    private final OkHttpClient httpClient;
-    private final JDA jda;
+    @Getter private final OkHttpClient httpClient;
+    @Getter private final JDA jda;
 
-    DiscordSRV(PluginManager pluginManager, Server server) throws LoginException {
+    @Builder
+    DiscordSRV(@NonNull PluginManager pluginManager, @NonNull Server server) throws LoginException {
         DiscordSRV.INSTANCE = this;
         this.eventBus = new EventBus();
         this.pluginManager = pluginManager;
@@ -72,23 +76,4 @@ public class DiscordSRV {
         return INSTANCE;
     }
 
-    public EventBus getEventBus() {
-        return eventBus;
-    }
-
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
-    public Server getServer() {
-        return server;
-    }
-
-    public OkHttpClient getHttpClient() {
-        return httpClient;
-    }
-
-    public JDA getJda() {
-        return jda;
-    }
 }

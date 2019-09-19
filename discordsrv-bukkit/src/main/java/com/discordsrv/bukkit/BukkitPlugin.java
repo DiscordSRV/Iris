@@ -25,7 +25,6 @@ import com.discordsrv.bukkit.listener.PlayerDeathListener;
 import com.discordsrv.bukkit.listener.award.PlayerAchievementListener;
 import com.discordsrv.bukkit.listener.award.PlayerAdvancementListener;
 import com.discordsrv.bukkit.listener.chat.VanillaChatListener;
-import com.discordsrv.common.Builder;
 import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.logging.Log;
 import com.discordsrv.common.logging.Logger;
@@ -44,9 +43,9 @@ public final class BukkitPlugin extends JavaPlugin implements Logger {
         Log.use(this);
 
         try {
-            srv = new Builder()
-                    .usingPluginManager(new PluginManagerImpl())
-                    .usingServer(new ServerImpl())
+            srv = DiscordSRV.builder()
+                    .pluginManager(new PluginManagerImpl())
+                    .server(new ServerImpl())
                     .build();
         } catch (LoginException e) {
             getLogger().severe("Failed to login to Discord");

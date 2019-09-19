@@ -21,16 +21,16 @@ package com.discordsrv.bukkit.impl.event;
 import com.discordsrv.bukkit.impl.PlayerImpl;
 import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerAwardedEvent;
-import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerEvent;
 
-public class PlayerAwardedAdvancementEventImpl extends CancelableEvent implements PlayerAwardedEvent {
+public class PlayerAwardedEventImpl extends CancelableEvent implements PlayerAwardedEvent {
 
+    private final PlayerEvent rawEvent;
     private final String advancement;
-    private final Player player;
 
-    public PlayerAwardedAdvancementEventImpl(String advancement, Player player) {
+    public PlayerAwardedEventImpl(PlayerEvent rawEvent, String advancement) {
+        this.rawEvent = rawEvent;
         this.advancement = advancement;
-        this.player = player;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class PlayerAwardedAdvancementEventImpl extends CancelableEvent implement
 
     @Override
     public com.discordsrv.common.abstracted.Player getPlayer() {
-        return PlayerImpl.get(player).orElseThrow(() -> new RuntimeException("PlayerAwardedAdvancementEvent has null player"));
+        return PlayerImpl.get(rawEvent.getPlayer()).orElseThrow(() -> new RuntimeException("PlayerAwardedAdvancementEvent has null player"));
     }
 
 }

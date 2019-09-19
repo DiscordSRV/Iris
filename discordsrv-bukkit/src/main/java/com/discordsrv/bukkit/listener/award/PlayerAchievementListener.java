@@ -18,7 +18,7 @@
 
 package com.discordsrv.bukkit.listener.award;
 
-import com.discordsrv.bukkit.impl.event.PlayerAwardedAdvancementEventImpl;
+import com.discordsrv.bukkit.impl.event.PlayerAwardedEventImpl;
 import com.discordsrv.common.DiscordSRV;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -40,7 +40,7 @@ public class PlayerAchievementListener implements Listener {
                 .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
                 .collect(Collectors.joining(" "));
 
-        DiscordSRV.get().getEventBus().publish(new PlayerAwardedAdvancementEventImpl(name, event.getPlayer()));
+        DiscordSRV.get().getEventBus().publish(new PlayerAwardedEventImpl(event, name));
     }
 
 }

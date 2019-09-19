@@ -18,7 +18,7 @@
 
 package com.discordsrv.common.localization;
 
-import java.util.Map;
+import lombok.Getter;
 
 import static org.joor.Reflect.on;
 
@@ -32,14 +32,7 @@ public enum Language {
         change(Language.ENGLISH);
     }
 
-    private static Language selected;
-
-    /**
-     * Get the currently selected plugin language
-     */
-    public static Language getSelected() {
-        return selected;
-    }
+    @Getter private static Language selected;
 
     public static void change(Language language) {
         selected = language;

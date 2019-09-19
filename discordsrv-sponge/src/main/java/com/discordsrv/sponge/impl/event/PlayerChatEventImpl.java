@@ -19,7 +19,7 @@ public class PlayerChatEventImpl extends CancelableEvent implements PlayerChatEv
         this.event = event;
         this.message = GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(event.getMessage()));
         this.channel = channel; //TODO: get from MessageChannel (MessageChannel -> channel)
-        setCancelled(event.isMessageCancelled());
+        setCanceled(event.isMessageCancelled());
     }
 
     @Override

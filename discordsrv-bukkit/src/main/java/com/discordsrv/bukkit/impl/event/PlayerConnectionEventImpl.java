@@ -22,47 +22,38 @@ import com.discordsrv.bukkit.impl.PlayerImpl;
 import com.discordsrv.common.abstracted.Player;
 import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerConnectionEvent;
-import net.kyori.text.Component;
+import lombok.Getter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerConnectionEventImpl extends CancelableEvent implements PlayerConnectionEvent {
 
-    private final org.bukkit.entity.Player player;
-    private final net.kyori.text.Component message;
-    private final State state;
+    @Getter private final PlayerEvent rawEvent;
+    @Getter private final net.kyori.text.Component message;
+    @Getter private final State state;
 
-    public PlayerConnectionEventImpl(PlayerJoinEvent event) {
-        this.player = event.getPlayer();
-        this.message = LegacyComponentSerializer.INSTANCE.deserialize(event.getJoinMessage());
+    public PlayerConnectionEventImpl(PlayerJoinEvent rawEvent) {
+        this.rawEvent = rawEvent;
+        this.message = LegacyComponentSerializer.INSTANCE.deserialize(rawEvent.getJoinMessage());
         this.state = State.JOIN;
     }
 
-    public PlayerConnectionEventImpl(PlayerQuitEvent event) {
-        this.player = event.getPlayer();
-        this.message = LegacyComponentSerializer.INSTANCE.deserialize(event.getQuitMessage());
+    public PlayerConnectionEventImpl(PlayerQuitEvent rawEvent) {
+        this.rawEvent = rawEvent;
+        this.message = LegacyComponentSerializer.INSTANCE.deserialize(rawEvent.getQuitMessage());
         this.state = State.QUIT;
     }
 
     @Override
     public boolean isFirstTime() {
-        return !player.hasPlayedBefore();
-    }
-
-    @Override
-    public Component getMessage() {
-        return message;
-    }
-
-    @Override
-    public State getState() {
-        return state;
+        return !rawEvent.getPlayer().hasPlayedBefore();
     }
 
     @Override
     public Player getPlayer() {
-        return PlayerImpl.get(player).orElseThrow(() -> new RuntimeException("PlayerConnectionEvent has null player"));
+        return PlayerImpl.get(rawEvent.getPlayer()).orElseThrow(() -> new RuntimeException("PlayerConnectionEvent has null player"));
     }
 
 }

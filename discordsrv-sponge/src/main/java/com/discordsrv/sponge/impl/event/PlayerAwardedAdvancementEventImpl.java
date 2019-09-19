@@ -12,7 +12,7 @@ public class PlayerAwardedAdvancementEventImpl extends CancelableEvent implement
     public PlayerAwardedAdvancementEventImpl(String advancement, Player player, boolean cancelled) {
         this.advancement = advancement;
         this.player = player;
-        setCancelled(cancelled);
+        setCanceled(cancelled);
     }
 
     @Override

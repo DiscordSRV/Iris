@@ -21,14 +21,14 @@ package com.discordsrv.common.api;
 public interface Cancelable {
 
     default void cancel() {
-        setCancelled(true);
+        setCanceled(true);
     }
 
     default void uncancel() {
-        setCancelled(false);
+        setCanceled(false);
     }
 
-    void setCancelled(boolean cancelled);
+    void setCanceled(boolean cancelled);
     boolean isCanceled();
 
 }

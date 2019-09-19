@@ -20,6 +20,7 @@ package com.discordsrv.common.api;
 
 import com.discordsrv.common.api.event.Event;
 import com.discordsrv.common.logging.Log;
+import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 
 public class EventBus {
 
-    private Set<Object> listeners = new HashSet<>();
+    @Getter private Set<Object> listeners = new HashSet<>();
 
     /**
      * Subscribe the given instance to DiscordSRV events
@@ -58,10 +59,6 @@ public class EventBus {
      */
     public boolean unsubscribe(Object listener) {
         return listeners.remove(listener);
-    }
-
-    public Set<Object> getListeners() {
-        return listeners;
     }
 
     public Object getListener(Class listenerClass) {

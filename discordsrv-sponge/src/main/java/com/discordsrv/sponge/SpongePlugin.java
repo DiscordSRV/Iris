@@ -18,7 +18,6 @@
 
 package com.discordsrv.sponge;
 
-import com.discordsrv.common.Builder;
 import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.logging.Log;
 import com.discordsrv.sponge.impl.PluginManagerImpl;
@@ -29,6 +28,7 @@ import com.discordsrv.sponge.listener.PlayerDeathListener;
 import com.discordsrv.sponge.listener.award.PlayerAchievementListener;
 import com.discordsrv.sponge.listener.award.PlayerAdvancementListener;
 import com.google.inject.Inject;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
@@ -52,25 +52,19 @@ import java.io.File;
 )
 public class SpongePlugin implements com.discordsrv.common.logging.Logger {
 
-    @Inject
-    @ConfigDir(sharedRoot = false)
-    private File dataFolder;
-
-    @Inject
-    private Logger logger;
-
-    private DiscordSRV srv;
-
-    private SpongeExecutorService asyncExecutor;
+    @Inject @Getter @ConfigDir(sharedRoot = false) private File dataFolder;
+    @Inject @Getter private Logger logger;
+    @Getter private DiscordSRV srv;
+    @Getter private SpongeExecutorService asyncExecutor;
 
     @Listener
     public void onGamePreInit(GamePreInitializationEvent event) {
         Log.use(this);
 
         try {
-            srv = new Builder()
-                    .usingPluginManager(new PluginManagerImpl())
-                    .usingServer(new ServerImpl())
+            srv = DiscordSRV.builder()
+                    .pluginManager(new PluginManagerImpl())
+                    .server(new ServerImpl())
                     .build();
         } catch (LoginException e) {
             logger.error("Failed to login to Discord");
@@ -116,14 +110,6 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
                 }
                 break;
         }
-    }
-
-    public File getDataFolder() {
-        return dataFolder;
-    }
-
-    public SpongeExecutorService getAsyncExecutor() {
-        return asyncExecutor;
     }
 
     public static SpongePlugin get() {

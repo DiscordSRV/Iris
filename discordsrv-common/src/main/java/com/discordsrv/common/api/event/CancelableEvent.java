@@ -19,19 +19,11 @@
 package com.discordsrv.common.api.event;
 
 import com.discordsrv.common.api.Cancelable;
+import lombok.Getter;
+import lombok.Setter;
 
 public abstract class CancelableEvent implements Cancelable {
 
-    private boolean canceled = false;
-
-    @Override
-    public void setCancelled(boolean cancelled) {
-        this.canceled = cancelled;
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return canceled;
-    }
+    @Getter @Setter private boolean canceled = false;
 
 }

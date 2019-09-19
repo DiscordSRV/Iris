@@ -43,8 +43,7 @@ public enum Language {
 
     public static void change(Language language) {
         selected = language;
-        on(Localized.class).fields().entrySet().stream()
-                .map(Map.Entry::getValue)
+        on(Localized.class).fields().values().stream()
                 .filter(reflect -> reflect.type() == Localized.Definition.class)
                 .map(reflect -> ((Localized.Definition) reflect.get()))
                 .forEach(Localized.Definition::update);

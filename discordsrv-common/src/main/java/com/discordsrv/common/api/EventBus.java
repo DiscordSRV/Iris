@@ -78,7 +78,7 @@ public class EventBus {
      * @param event the event to be called
      * @return the event that was called
      */
-    public <E extends Event> Event publish(E event) {
+    public <E extends Event> E publish(E event) {
         for (ListenerPriority priority : ListenerPriority.values()) {
             for (Object listener : listeners) {
                 for (Method method : listener.getClass().getMethods()) {

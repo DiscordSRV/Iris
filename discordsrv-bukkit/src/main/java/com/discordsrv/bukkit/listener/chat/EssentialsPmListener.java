@@ -16,14 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.api.event;
+package com.discordsrv.bukkit.listener.chat;
 
-import com.discordsrv.common.api.Cancelable;
-import lombok.Getter;
-import lombok.Setter;
+import org.bukkit.event.Listener;
 
-public abstract class CancelableEvent implements Cancelable {
+//TODO
+public class EssentialsPmListener implements Listener {
 
-    @Getter @Setter private boolean canceled = false;
+
 
 }

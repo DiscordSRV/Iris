@@ -1,10 +1,10 @@
 package com.discordsrv.sponge.impl.event;
 
 import com.discordsrv.common.abstracted.Player;
-import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerAwardedEvent;
+import com.discordsrv.common.api.event.PublishCancelableEvent;
 
-public class PlayerAwardedAdvancementEventImpl extends CancelableEvent implements PlayerAwardedEvent {
+public class PlayerAwardedAdvancementEventImpl extends PublishCancelableEvent implements PlayerAwardedEvent {
 
     private final String advancement;
     private final Player player;
@@ -12,7 +12,7 @@ public class PlayerAwardedAdvancementEventImpl extends CancelableEvent implement
     public PlayerAwardedAdvancementEventImpl(String advancement, Player player, boolean cancelled) {
         this.advancement = advancement;
         this.player = player;
-        setCanceled(cancelled);
+        this.setPublishCanceled(cancelled);
     }
 
     @Override

@@ -38,7 +38,9 @@ public class ChatListener {
     }
 
     private void handle(MessageChannelEvent event, Player player) {
-        DiscordSRV.get().getEventBus().publish(new PlayerChatEventImpl(event, "global"));
+        DiscordSRV.get().getChannelManager().getChannel("global").ifPresent(c ->
+                DiscordSRV.get().getEventBus().publish(new PlayerChatEventImpl(event, c))
+        );
     }
 
 }

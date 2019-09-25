@@ -16,30 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.localization;
+package com.discordsrv.common.api;
 
-import lombok.Getter;
+public interface PublishCancelable {
 
-import static org.joor.Reflect.on;
-
-public enum Language {
-
-    ENGLISH,
-    GERMAN;
-
-    static {
-        // default to English
-        change(Language.ENGLISH);
+    default void cancelPublish() {
+        setPublishCanceled(true);
     }
 
-    @Getter private static Language selected;
-
-    public static void change(Language language) {
-        selected = language;
-        on(Localized.class).fields().values().stream()
-                .filter(reflect -> reflect.type() == Localized.Definition.class)
-                .map(reflect -> ((Localized.Definition) reflect.get()))
-                .forEach(Localized.Definition::update);
+    default void setShouldPublish() {
+        setPublishCanceled(false);
     }
+
+    void setPublishCanceled(boolean cancelled);
+    boolean isPublishCanceled();
 
 }

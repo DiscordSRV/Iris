@@ -1,24 +1,24 @@
 package com.discordsrv.sponge.impl.event;
 
 import com.discordsrv.common.abstracted.Player;
-import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerDeathEvent;
+import com.discordsrv.common.api.event.PublishCancelableEvent;
 import lombok.Getter;
-import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-public class PlayerDeathEventImpl extends CancelableEvent implements PlayerDeathEvent {
+public class PlayerDeathEventImpl extends PublishCancelableEvent implements PlayerDeathEvent {
 
     private final DestructEntityEvent.Death event;
-    @Getter private final Component message;
+    @Getter private final TextComponent message;
 
     public PlayerDeathEventImpl(DestructEntityEvent.Death event) {
         this.event = event;
-        this.message = GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(event.getMessage()));
-        setCanceled(event.isCancelled() || event.isMessageCancelled());
+        this.message = (TextComponent) GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(event.getMessage()));
+        this.setPublishCanceled(event.isCancelled() || event.isMessageCancelled());
     }
 
     @Override

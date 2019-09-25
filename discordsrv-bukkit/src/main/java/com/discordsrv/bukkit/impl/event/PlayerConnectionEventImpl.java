@@ -20,18 +20,19 @@ package com.discordsrv.bukkit.impl.event;
 
 import com.discordsrv.bukkit.impl.PlayerImpl;
 import com.discordsrv.common.abstracted.Player;
-import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerConnectionEvent;
+import com.discordsrv.common.api.event.PublishCancelableEvent;
 import lombok.Getter;
+import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class PlayerConnectionEventImpl extends CancelableEvent implements PlayerConnectionEvent {
+public class PlayerConnectionEventImpl extends PublishCancelableEvent implements PlayerConnectionEvent {
 
     @Getter private final PlayerEvent rawEvent;
-    @Getter private final net.kyori.text.Component message;
+    @Getter private final TextComponent message;
     @Getter private final State state;
 
     public PlayerConnectionEventImpl(PlayerJoinEvent rawEvent) {

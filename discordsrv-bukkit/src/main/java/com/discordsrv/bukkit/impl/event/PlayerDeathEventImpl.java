@@ -19,17 +19,16 @@
 package com.discordsrv.bukkit.impl.event;
 
 import com.discordsrv.bukkit.impl.PlayerImpl;
-import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerDeathEvent;
+import com.discordsrv.common.api.event.PublishCancelableEvent;
 import lombok.Getter;
-import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
-public class PlayerDeathEventImpl extends CancelableEvent implements PlayerDeathEvent {
+public class PlayerDeathEventImpl extends PublishCancelableEvent implements PlayerDeathEvent {
 
     @Getter private final org.bukkit.event.entity.PlayerDeathEvent rawEvent;
-    @Getter private final Component message;
+    @Getter private final TextComponent message;
 
     public PlayerDeathEventImpl(org.bukkit.event.entity.PlayerDeathEvent rawEvent) {
         this.rawEvent = rawEvent;

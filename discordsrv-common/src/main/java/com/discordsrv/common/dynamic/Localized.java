@@ -16,26 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.localization;
+package com.discordsrv.common.dynamic;
 
+import github.scarsz.configuralize.Language;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.joor.Reflect.on;
 
-/**
- * The configuration library that DiscordSRV uses, Configurate, does not support localization for config comments.
- * This class uses reflection on {@link String}s declared as final to change their values when a new language is loaded.
- * If you are attempting to learn how DiscordSRV works to learn from it, please note that the preferred solution
- * is to have proper globalization in the config library.
- */
 public class Localized {
 
-    public static final Definition CONFIG_DEBUG_CATEGORY = new Definition()
-            .localize(Language.ENGLISH, "Debug options. Unless you have a reason to touch these, don't.");
-    public static final Definition CONFIG_DEBUG_MODE = new Definition()
-            .localize(Language.ENGLISH, "Mode of debug messages for DiscordSRV. 0=none, 1=all, 2=all+stacktraces")
-            .localize(Language.GERMAN, "hon hon baguette");
+    public static final Definition ASM_NEEDS_TO_BE_UPDATED = new Definition()
+            .localize(Language.EN, "Your server is using an older version of ASM. You must manually update it.")
+            .localize(Language.FR, "hon hon baguette eiffel tower");
+
+    @Getter @Setter private static Language language = Language.EN;
 
     /**
      * Returns whether or not every {@link Localized} message has definitions for every {@link Language}
@@ -48,42 +48,36 @@ public class Localized {
     }
 
     /**
-     * Represents a single {@link String} whose value will change depending on {@link Language#getSelected()}
+     * Represents a single {@link String} whose value will change depending on {@link Localized#getLanguage()}}
      */
     public static final class Definition {
 
         private final Map<Language, String> definitions = new HashMap<>();
-        public final String value = "[Language not loaded]";
 
         private Definition localize(Language language, String definition) {
             definitions.put(language, definition);
-            if (language == Language.getSelected()) update();
             return this;
         }
 
         private boolean isTranslated() {
-            for (Language language : Language.values()) {
-                if (!isTranslated(language)) {
-                    return false;
-                }
-            }
-
-            return true;
+            return Arrays.stream(Language.values()).allMatch(this::isTranslated);
         }
 
         private boolean isTranslated(Language language) {
             return definitions.containsKey(language);
         }
 
-        void update() {
-//            on(this).set("value", definitions.getOrDefault(Language.getSelected(), "[" + Language.getSelected().name() + " contains no definition]"));
+        public String value() {
+            return definitions.getOrDefault(Localized.getLanguage(), definitions.get(Language.EN));
         }
 
         @Override
         public String toString() {
             return "Definition{" +
-                    "definitions=" + definitions +
-                    ", value='" + value + '\'' +
+                    "value='" + value() + '\'' +
+                    ", languages=" + definitions.keySet().stream()
+                            .map(Language::getCode)
+                            .collect(Collectors.joining(", ")) +
                     '}';
         }
 

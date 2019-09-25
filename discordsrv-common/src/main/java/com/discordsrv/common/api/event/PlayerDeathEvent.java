@@ -18,11 +18,11 @@
 
 package com.discordsrv.common.api.event;
 
-import com.discordsrv.common.api.Cancelable;
-import net.kyori.text.Component;
+import com.discordsrv.common.api.PublishCancelable;
+import net.kyori.text.TextComponent;
 
-public interface PlayerDeathEvent extends Cancelable, PlayerEvent {
+public interface PlayerDeathEvent extends PublishCancelable, PlayerEvent {
 
-    Component getMessage();
+    TextComponent getMessage();
 
 }

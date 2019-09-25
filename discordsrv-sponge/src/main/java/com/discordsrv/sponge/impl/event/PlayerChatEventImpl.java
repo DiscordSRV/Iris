@@ -1,29 +1,30 @@
 package com.discordsrv.sponge.impl.event;
 
 import com.discordsrv.common.abstracted.Player;
-import com.discordsrv.common.api.event.CancelableEvent;
+import com.discordsrv.common.abstracted.channel.Channel;
 import com.discordsrv.common.api.event.PlayerChatEvent;
+import com.discordsrv.common.api.event.PublishCancelableEvent;
 import com.discordsrv.sponge.impl.PlayerImpl;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-public class PlayerChatEventImpl extends CancelableEvent implements PlayerChatEvent {
+public class PlayerChatEventImpl extends PublishCancelableEvent implements PlayerChatEvent {
 
     private final MessageChannelEvent event;
     private final TextComponent message;
-    private final String channel;
+    private final Channel channel;
 
-    public PlayerChatEventImpl(MessageChannelEvent event, String channel) {
+    public PlayerChatEventImpl(MessageChannelEvent event, Channel channel) {
         this.event = event;
         this.message = (TextComponent) GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(event.getMessage()));
         this.channel = channel; //TODO: get from MessageChannel (MessageChannel -> channel)
-        setCanceled(event.isMessageCancelled());
+        this.setPublishCanceled(event.isMessageCancelled());
     }
 
     @Override
-    public String getChannel() {
+    public Channel getChannel() {
         return channel;
     }
 

@@ -37,7 +37,9 @@ public class VanillaChatListener implements Listener {
     }
 
     private void handle(AsyncPlayerChatEvent event) {
-        DiscordSRV.get().getEventBus().publish(new PlayerChatEventImpl(event, "global"));
+        DiscordSRV.get().getChannelManager().getChannel("global").ifPresent(c ->
+                DiscordSRV.get().getEventBus().publish(new PlayerChatEventImpl(event, c))
+        );
     }
 
 }

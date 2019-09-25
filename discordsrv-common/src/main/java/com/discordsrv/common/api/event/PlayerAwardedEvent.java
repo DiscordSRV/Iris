@@ -18,9 +18,9 @@
 
 package com.discordsrv.common.api.event;
 
-import com.discordsrv.common.api.Cancelable;
+import com.discordsrv.common.api.PublishCancelable;
 
-public interface PlayerAwardedEvent extends Cancelable, PlayerEvent {
+public interface PlayerAwardedEvent extends PublishCancelable, PlayerEvent {
 
     String getAward();
 

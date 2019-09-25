@@ -16,28 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-repositories {
-    maven {
-        name = 'spigotmc-repo'
-        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
-    }
-}
+package com.discordsrv.common.abstracted.channel;
 
-dependencies {
-    compile project(':discordsrv-common')
-    provided 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
-    compile 'net.kyori:text-adapter-bukkit:3.0.3' // kyori text adapter
+import lombok.Synchronized;
 
-}
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        expand 'version': project.version
-    }
-}
+public interface ChannelManager {
 
-shadowJar {
-    dependencies {
-        include(dependency(':discordsrv-common'))
-    }
+    Set<BaseChannel> channels = new HashSet<>();
+    Set<BaseChannel> getChannels();
+    Optional<BaseChannel> getChannel(String target);
+
+    @Synchronized(value = "channels") void load();
+
 }

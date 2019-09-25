@@ -19,23 +19,19 @@
 package com.discordsrv.bukkit.impl.event;
 
 import com.discordsrv.bukkit.impl.PlayerImpl;
-import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerAwardedEvent;
+import com.discordsrv.common.api.event.PublishCancelableEvent;
+import lombok.Getter;
 import org.bukkit.event.player.PlayerEvent;
 
-public class PlayerAwardedEventImpl extends CancelableEvent implements PlayerAwardedEvent {
+public class PlayerAwardedEventImpl extends PublishCancelableEvent implements PlayerAwardedEvent {
 
-    private final PlayerEvent rawEvent;
-    private final String advancement;
+    @Getter private final PlayerEvent rawEvent;
+    @Getter private final String award;
 
-    public PlayerAwardedEventImpl(PlayerEvent rawEvent, String advancement) {
+    public PlayerAwardedEventImpl(PlayerEvent rawEvent, String award) {
         this.rawEvent = rawEvent;
-        this.advancement = advancement;
-    }
-
-    @Override
-    public String getAward() {
-        return advancement;
+        this.award = award;
     }
 
     @Override

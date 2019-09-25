@@ -1,27 +1,27 @@
 package com.discordsrv.sponge.impl.event;
 
 import com.discordsrv.common.abstracted.Player;
-import com.discordsrv.common.api.event.CancelableEvent;
 import com.discordsrv.common.api.event.PlayerConnectionEvent;
+import com.discordsrv.common.api.event.PublishCancelableEvent;
 import com.discordsrv.sponge.impl.PlayerImpl;
-import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.event.entity.living.humanoid.player.TargetPlayerEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-public class PlayerConnectionEventImpl extends CancelableEvent implements PlayerConnectionEvent {
+public class PlayerConnectionEventImpl extends PublishCancelableEvent implements PlayerConnectionEvent {
 
     private final org.spongepowered.api.entity.living.player.Player player;
-    private final Component message;
+    private final TextComponent message;
     private final State state;
 
     public PlayerConnectionEventImpl(ClientConnectionEvent event) {
         this.player = ((TargetPlayerEvent) event).getTargetEntity();
-        this.message = GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(((MessageChannelEvent) event).getMessage()));
+        this.message = (TextComponent) GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(((MessageChannelEvent) event).getMessage()));
         this.state = event instanceof ClientConnectionEvent.Join ? State.JOIN : State.QUIT;
-        setCanceled(((MessageChannelEvent) event).isMessageCancelled());
+        this.setPublishCanceled(((MessageChannelEvent) event).isMessageCancelled());
     }
 
     @Override
@@ -30,7 +30,7 @@ public class PlayerConnectionEventImpl extends CancelableEvent implements Player
     }
 
     @Override
-    public Component getMessage() {
+    public TextComponent getMessage() {
         return message;
     }
 

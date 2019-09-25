@@ -20,20 +20,21 @@ package com.discordsrv.bukkit.impl.event;
 
 import com.discordsrv.bukkit.impl.PlayerImpl;
 import com.discordsrv.common.abstracted.Player;
-import com.discordsrv.common.api.event.CancelableEvent;
+import com.discordsrv.common.abstracted.channel.Channel;
 import com.discordsrv.common.api.event.PlayerChatEvent;
+import com.discordsrv.common.api.event.PublishCancelableEvent;
 import lombok.Getter;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class PlayerChatEventImpl extends CancelableEvent implements PlayerChatEvent {
+public class PlayerChatEventImpl extends PublishCancelableEvent implements PlayerChatEvent {
 
-    private final AsyncPlayerChatEvent rawEvent;
-    @Getter private final String channel;
+    @Getter private final AsyncPlayerChatEvent rawEvent;
+    @Getter private final Channel channel;
     @Getter private final TextComponent message;
 
-    public PlayerChatEventImpl(AsyncPlayerChatEvent rawEvent, String channel) {
+    public PlayerChatEventImpl(AsyncPlayerChatEvent rawEvent, Channel channel) {
         this.rawEvent = rawEvent;
         this.channel = channel;
         this.message = LegacyComponentSerializer.INSTANCE.deserialize(rawEvent.getMessage());

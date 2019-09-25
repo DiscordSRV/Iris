@@ -18,15 +18,19 @@
 
 package com.discordsrv.common.listener;
 
+import com.discordsrv.common.api.ListenerPriority;
 import com.discordsrv.common.api.Subscribe;
 import com.discordsrv.common.api.event.PlayerChatEvent;
 import com.discordsrv.common.logging.Log;
 
 public class PlayerChatListener {
 
-    @Subscribe
+    @Subscribe(priority = ListenerPriority.MONITOR)
     public void onChat(PlayerChatEvent event) {
-        Log.debug("Received chat event: " + event.getPlayer().getName() + " -> " + event.getChannel() + " > " + event.getMessage().content());
+        Log.debug("Received " + (event.isPublishCanceled() ? "CANCELED " : "") + "chat event: " + event.getPlayer().getName() + " -> " + event.getChannel() + " > " + event.getMessage().content());
+        if (event.isPublishCanceled()) return;
+
+
     }
 
 }

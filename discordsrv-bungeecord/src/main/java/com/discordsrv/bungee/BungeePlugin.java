@@ -23,10 +23,12 @@ import com.discordsrv.bungee.impl.ServerImpl;
 import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.logging.Log;
 import com.discordsrv.common.logging.Logger;
+import github.scarsz.configuralize.ParseException;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
 
 public final class BungeePlugin extends Plugin implements Logger {
 
@@ -41,8 +43,14 @@ public final class BungeePlugin extends Plugin implements Logger {
                     .pluginManager(new PluginManagerImpl())
                     .server(new ServerImpl())
                     .build();
-        } catch (LoginException e) {
+        } catch (LoginException | InterruptedException e) {
             getLogger().severe("Failed to login to Discord");
+            e.printStackTrace();
+            return;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        } catch (IOException e) {
             e.printStackTrace();
             return;
         }

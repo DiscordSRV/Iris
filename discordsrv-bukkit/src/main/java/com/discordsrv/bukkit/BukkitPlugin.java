@@ -20,6 +20,7 @@ package com.discordsrv.bukkit;
 
 import com.discordsrv.bukkit.impl.PluginManagerImpl;
 import com.discordsrv.bukkit.impl.ServerImpl;
+import com.discordsrv.bukkit.impl.channel.ChannelManagerImpl;
 import com.discordsrv.bukkit.listener.PlayerConnectionListener;
 import com.discordsrv.bukkit.listener.PlayerDeathListener;
 import com.discordsrv.bukkit.listener.award.PlayerAchievementListener;
@@ -33,10 +34,11 @@ import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
 
 public final class BukkitPlugin extends JavaPlugin implements Logger {
 
-    private DiscordSRV srv;
+    private DiscordSRV srv = null;
 
     @Override
     public void onEnable() {
@@ -44,12 +46,24 @@ public final class BukkitPlugin extends JavaPlugin implements Logger {
 
         try {
             srv = DiscordSRV.builder()
+                    .dataFolder(getDataFolder())
+                    .channelManager(new ChannelManagerImpl())
                     .pluginManager(new PluginManagerImpl())
                     .server(new ServerImpl())
                     .build();
-        } catch (LoginException e) {
+        } catch (IOException e) {
+            getLogger().severe("I/O exception while saving configuration files");
+            e.printStackTrace();
+            srv = null;
+            return;
+        } catch (LoginException | InterruptedException e) {
             getLogger().severe("Failed to login to Discord");
             e.printStackTrace();
+            srv = null;
+            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+            srv = null;
             return;
         }
 
@@ -63,28 +77,26 @@ public final class BukkitPlugin extends JavaPlugin implements Logger {
         Bukkit.getPluginManager().registerEvents(new VanillaChatListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
+
+        // for plugin hooks, fully-qualified package names are used to avoid loading classes
+        // that might not have their respective plugin's classes available
+        if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
+            Bukkit.getPluginManager().registerEvents(new com.discordsrv.bukkit.listener.chat.EssentialsPmListener(), this);
+        }
     }
 
     @Override
     public void onDisable() {
-        srv.shutdown();
+        if (srv != null) srv.shutdown();
     }
 
     @Override
     public void log(Log.LogLevel level, String message) {
         switch (level) {
-            case INFO:
-                getLogger().info(message);
-                break;
-            case WARN:
-                getLogger().warning(message);
-                break;
-            case ERROR:
-                getLogger().severe(message);
-                break;
-            case DEBUG:
-                getLogger().info("[DEBUG] " + message);
-                break;
+            case INFO: getLogger().info(message); break;
+            case WARN: getLogger().warning(message); break;
+            case ERROR: getLogger().severe(message); break;
+            case DEBUG: getLogger().info("[DEBUG] " + message); break;
         }
     }
 

@@ -16,28 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-repositories {
-    maven {
-        name = 'spigotmc-repo'
-        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+package com.discordsrv.bukkit.impl.channel;
+
+import com.discordsrv.common.DiscordSRV;
+import com.discordsrv.common.abstracted.channel.BaseChannel;
+import net.kyori.text.TextComponent;
+
+import java.util.Set;
+
+public class VanillaChannel extends BaseChannel {
+
+    public VanillaChannel(Set<String> targetChannelIds) {
+        super("global", targetChannelIds);
     }
-}
 
-dependencies {
-    compile project(':discordsrv-common')
-    provided 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
-    compile 'net.kyori:text-adapter-bukkit:3.0.3' // kyori text adapter
-
-}
-
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        expand 'version': project.version
+    @Override
+    public void sendToMinecraft(TextComponent message) {
+        DiscordSRV.get().getServer().getOnlinePlayers().forEach(player -> player.sendMessage(message));
     }
-}
 
-shadowJar {
-    dependencies {
-        include(dependency(':discordsrv-common'))
-    }
 }

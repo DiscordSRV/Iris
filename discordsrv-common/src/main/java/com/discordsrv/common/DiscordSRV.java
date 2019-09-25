@@ -20,32 +20,76 @@ package com.discordsrv.common;
 
 import com.discordsrv.common.abstracted.PluginManager;
 import com.discordsrv.common.abstracted.Server;
+import com.discordsrv.common.abstracted.channel.ChannelManager;
 import com.discordsrv.common.api.EventBus;
+import com.discordsrv.common.dynamic.Localized;
 import com.discordsrv.common.listener.PlayerChatListener;
+import com.discordsrv.common.logging.Log;
+import github.scarsz.configuralize.DynamicConfig;
+import github.scarsz.configuralize.Language;
+import github.scarsz.configuralize.ParseException;
+import github.scarsz.configuralize.Source;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.events.ShutdownEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import okhttp3.OkHttpClient;
 
+import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class DiscordSRV {
 
     private static DiscordSRV INSTANCE;
 
+    @Getter private final DynamicConfig config;
+    @Getter private final ChannelManager channelManager;
+    @Getter private final OkHttpClient httpClient;
+    @Getter private final JDA jda;
+
+    // platform supplied objects
+    @Getter private final File dataFolder;
     @Getter private final EventBus eventBus;
     @Getter private final PluginManager pluginManager;
     @Getter private final Server server;
 
-    @Getter private final OkHttpClient httpClient;
-    @Getter private final JDA jda;
-
     @Builder(builderClassName = "DSRVBuilder")
-    DiscordSRV(@NonNull PluginManager pluginManager, @NonNull Server server) throws LoginException {
-        DiscordSRV.INSTANCE = this;
+    DiscordSRV(@NonNull File dataFolder, @NonNull ChannelManager channelManager, @NonNull PluginManager pluginManager,
+               @NonNull Server server) throws LoginException, IOException, ParseException, InterruptedException {
+        if (INSTANCE != null) {
+            throw new IllegalStateException("DiscordSRV is a singleton class. It should not be instantiated. Check usage.");
+        } else {
+            DiscordSRV.INSTANCE = this;
+        }
+
+        this.dataFolder = dataFolder;
+        //noinspection ResultOfMethodCallIgnored
+        this.dataFolder.mkdir();
+        this.config = new DynamicConfig(
+                new Source(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml")),
+                new Source(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml"))
+        );
+        this.config.saveAllDefaults();
+        this.config.loadAll();
+        this.config.getOptionalString("Debug.Forced language")
+                .flatMap(s -> Arrays.stream(Language.values())
+                        .filter(language -> language.getCode().equalsIgnoreCase(s) ||
+                                            language.name().equalsIgnoreCase(s))
+                        .findFirst())
+                .ifPresent(Localized::setLanguage);
+
+        this.channelManager = channelManager;
+        this.channelManager.load();
         this.eventBus = new EventBus();
         this.pluginManager = pluginManager;
         this.server = server;
@@ -59,7 +103,11 @@ public class DiscordSRV {
 
         this.jda = new JDABuilder()
                 .setHttpClient(httpClient)
-                .build();
+                .setToken(System.getenv("DISCORDSRV_TOKEN") != null
+                        ? System.getenv("DISCORDSRV_TOKEN")
+                        : config.getString("Token"))
+                .addEventListeners(channelManager)
+                .build().awaitReady();
 
         registerListeners();
     }
@@ -69,7 +117,25 @@ public class DiscordSRV {
     }
 
     public void shutdown() {
-
+        // try to shut down jda gracefully
+        if (jda != null) {
+            CompletableFuture shutdownTask = new CompletableFuture();
+            jda.addEventListener(new ListenerAdapter() {
+                @Override
+                public void onShutdown(@Nonnull ShutdownEvent event) {
+                    //noinspection unchecked
+                    shutdownTask.complete(null);
+                }
+            });
+            jda.shutdown();
+            try {
+                shutdownTask.get(5, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+                Log.warn("JDA took too long to shut down, skipping");
+            } catch (InterruptedException | ExecutionException e) {
+                Log.warn("Error occurred while waiting for JDA to shutdown: " + e.getMessage());
+            }
+        }
     }
 
     public static DiscordSRV get() {

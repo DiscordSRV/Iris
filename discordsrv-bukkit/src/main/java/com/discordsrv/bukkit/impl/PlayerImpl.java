@@ -114,4 +114,5 @@ public class PlayerImpl implements Player {
     public void sendMessage(Component component) {
         TextAdapter.sendComponent(player, component);
     }
+
 }

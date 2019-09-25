@@ -30,7 +30,7 @@ public class Log {
     }
 
     static {
-        // default to sout/serr until a platform changes the log manually
+        // default to sout/serr until a platform changes the log
         use((level, message) -> {
             switch (level) {
                 case INFO:

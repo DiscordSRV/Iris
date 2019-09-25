@@ -16,19 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.api;
+package com.discordsrv.common.api.event;
 
-public interface Cancelable {
+import com.discordsrv.common.api.PublishCancelable;
+import lombok.Getter;
+import lombok.Setter;
 
-    default void cancel() {
-        setCanceled(true);
-    }
+public abstract class PublishCancelableEvent implements PublishCancelable {
 
-    default void uncancel() {
-        setCanceled(false);
-    }
-
-    void setCanceled(boolean cancelled);
-    boolean isCanceled();
+    @Getter @Setter private boolean publishCanceled = false;
 
 }

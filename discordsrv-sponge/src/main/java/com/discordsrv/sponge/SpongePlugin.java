@@ -28,6 +28,7 @@ import com.discordsrv.sponge.listener.PlayerDeathListener;
 import com.discordsrv.sponge.listener.award.PlayerAchievementListener;
 import com.discordsrv.sponge.listener.award.PlayerAdvancementListener;
 import com.google.inject.Inject;
+import github.scarsz.configuralize.ParseException;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -40,6 +41,7 @@ import org.spongepowered.api.scheduler.SpongeExecutorService;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
+import java.io.IOException;
 
 @Plugin(
         id = "discordsrv",
@@ -63,10 +65,18 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
 
         try {
             srv = DiscordSRV.builder()
+                    .dataFolder(dataFolder)
                     .pluginManager(new PluginManagerImpl())
                     .server(new ServerImpl())
                     .build();
-        } catch (LoginException e) {
+        } catch (IOException e) {
+            logger.error("I/O exception while saving configuration files");
+            e.printStackTrace();
+            return;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        } catch (LoginException | InterruptedException e) {
             logger.error("Failed to login to Discord");
             e.printStackTrace();
             return;

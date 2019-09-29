@@ -3,6 +3,7 @@ package com.discordsrv.sponge.impl.event;
 import com.discordsrv.common.abstracted.Player;
 import com.discordsrv.common.api.event.PlayerConnectionEvent;
 import com.discordsrv.common.api.event.PublishCancelableEvent;
+import com.discordsrv.sponge.SpongePlugin;
 import com.discordsrv.sponge.impl.PlayerImpl;
 import net.kyori.text.Component;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
@@ -19,7 +20,7 @@ public class PlayerConnectionEventImpl extends PublishCancelableEvent implements
 
     public PlayerConnectionEventImpl(ClientConnectionEvent event) {
         this.player = ((TargetPlayerEvent) event).getTargetEntity();
-        this.message = GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(((MessageChannelEvent) event).getMessage()));
+        this.message = SpongePlugin.get().serialize(((MessageChannelEvent) event).getMessage());
         this.state = event instanceof ClientConnectionEvent.Join ? State.JOIN : State.QUIT;
         this.setPublishCanceled(((MessageChannelEvent) event).isMessageCancelled());
     }

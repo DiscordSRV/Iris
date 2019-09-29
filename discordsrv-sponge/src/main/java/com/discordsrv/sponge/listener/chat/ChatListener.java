@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.sponge.listener;
+package com.discordsrv.sponge.listener.chat;
 
 import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.sponge.SpongePlugin;

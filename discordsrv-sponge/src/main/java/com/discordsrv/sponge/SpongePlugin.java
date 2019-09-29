@@ -22,22 +22,30 @@ import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.logging.Log;
 import com.discordsrv.sponge.impl.PluginManagerImpl;
 import com.discordsrv.sponge.impl.ServerImpl;
-import com.discordsrv.sponge.listener.ChatListener;
+import com.discordsrv.sponge.impl.channel.ChannelManagerImpl;
+import com.discordsrv.sponge.listener.NucleusAfkListener;
+import com.discordsrv.sponge.listener.chat.ChatListener;
 import com.discordsrv.sponge.listener.PlayerConnectionListener;
 import com.discordsrv.sponge.listener.PlayerDeathListener;
 import com.discordsrv.sponge.listener.award.PlayerAchievementListener;
 import com.discordsrv.sponge.listener.award.PlayerAdvancementListener;
+import com.discordsrv.sponge.listener.chat.NucleusBroadcastListener;
 import com.google.inject.Inject;
 import github.scarsz.configuralize.ParseException;
 import lombok.Getter;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
+import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.scheduler.SpongeExecutorService;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -50,6 +58,9 @@ import java.io.IOException;
         url = "https://discordsrv.com",
         authors = {
                 "Scarsz"
+        },
+        dependencies = {
+                @Dependency(id = "nucleus", optional = true)
         }
 )
 public class SpongePlugin implements com.discordsrv.common.logging.Logger {
@@ -66,6 +77,7 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
         try {
             srv = DiscordSRV.builder()
                     .dataFolder(dataFolder)
+                    .channelManager(new ChannelManagerImpl())
                     .pluginManager(new PluginManagerImpl())
                     .server(new ServerImpl())
                     .build();
@@ -93,6 +105,13 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
         Sponge.getEventManager().registerListeners(this, new ChatListener());
         Sponge.getEventManager().registerListeners(this, new PlayerConnectionListener());
         Sponge.getEventManager().registerListeners(this, new PlayerDeathListener());
+
+        // for plugin hooks, fully-qualified package names are used to avoid loading classes
+        // that might not have their respective plugin's classes available
+        if (Sponge.getPluginManager().isLoaded("nucleus")) {
+            Sponge.getEventManager().registerListeners(this, new NucleusAfkListener());
+            Sponge.getEventManager().registerListeners(this, new NucleusBroadcastListener());
+        }
     }
 
     @Listener
@@ -120,6 +139,14 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
                 }
                 break;
         }
+    }
+
+    public Component serialize(Text text) {
+        return GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(text)); // TODO switch to jackson serializer once available
+    }
+
+    public Text serialize(Component component) {
+        return TextSerializers.JSON.deserialize(GsonComponentSerializer.INSTANCE.serialize(component)); // TODO switch to jackson serializer once available
     }
 
     public static SpongePlugin get() {

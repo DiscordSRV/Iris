@@ -4,6 +4,7 @@ import com.discordsrv.common.abstracted.Player;
 import com.discordsrv.common.abstracted.channel.Channel;
 import com.discordsrv.common.api.event.PlayerChatEvent;
 import com.discordsrv.common.api.event.PublishCancelableEvent;
+import com.discordsrv.sponge.SpongePlugin;
 import com.discordsrv.sponge.impl.PlayerImpl;
 import net.kyori.text.Component;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
@@ -18,7 +19,7 @@ public class PlayerChatEventImpl extends PublishCancelableEvent implements Playe
 
     public PlayerChatEventImpl(MessageChannelEvent event, Channel channel) {
         this.event = event;
-        this.message = GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(event.getMessage()));
+        this.message = SpongePlugin.get().serialize(event.getMessage());
         this.channel = channel; //TODO: get from MessageChannel (MessageChannel -> channel)
         this.setPublishCanceled(event.isMessageCancelled());
     }

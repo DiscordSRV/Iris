@@ -20,7 +20,7 @@ package com.discordsrv.common.abstracted.channel;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.kyori.text.TextComponent;
+import net.kyori.text.Component;
 
 import java.util.Set;
 import java.util.function.Consumer;
@@ -32,7 +32,7 @@ public interface Channel {
     Set<TextChannel> getTargetChannels();
 
     void sendToMinecraft(String message);
-    void sendToMinecraft(TextComponent message);
+    void sendToMinecraft(Component message);
     void sendToDiscord(String message);
     void sendToDiscord(String message, Consumer<? super Message> success);
     void sendToDiscord(String message, Consumer<? super Message> success, Consumer<? super Throwable> fail);

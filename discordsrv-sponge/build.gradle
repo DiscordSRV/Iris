@@ -25,6 +25,10 @@ repositories {
         name = 'sponge'
         url = 'https://repo.spongepowered.org/maven'
     }
+    maven {
+        name = 'nucleus'
+        url = 'http://repo.drnaylor.co.uk/artifactory/list/minecraft'
+    }
 }
 
 dependencies {
@@ -34,8 +38,9 @@ dependencies {
     provided 'org.spongepowered:spongeapi:7.1.0'
     provided 'org.spongepowered:spongeapi6:6.0.0' // from Scarsz' nexus
 
-    // kyori text adapter
-    compile 'net.kyori:text-adapter-spongeapi:3.0.3'
+    compile 'net.kyori:text-adapter-spongeapi:3.0.3' // kyori text adapter
+
+    provided 'io.github.nucleuspowered:nucleus-api:1.14.0-S7.1' // nucleus (sponge's essentials)
 }
 
 sponge.plugin.id = pluginId

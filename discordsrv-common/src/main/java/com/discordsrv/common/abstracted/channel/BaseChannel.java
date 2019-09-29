@@ -25,6 +25,7 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,7 +46,7 @@ public abstract class BaseChannel implements Channel {
     public void sendToMinecraft(String message) {
         sendToMinecraft(TextComponent.of(message));
     }
-    public abstract void sendToMinecraft(TextComponent message);
+    public abstract void sendToMinecraft(Component message);
 
     public void sendToDiscord(String message) {
         sendToDiscord(new MessageBuilder(message).build());

@@ -20,7 +20,7 @@ package com.discordsrv.bukkit.impl.channel;
 
 import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.abstracted.channel.BaseChannel;
-import net.kyori.text.TextComponent;
+import net.kyori.text.Component;
 
 import java.util.Set;
 
@@ -31,7 +31,7 @@ public class VanillaChannel extends BaseChannel {
     }
 
     @Override
-    public void sendToMinecraft(TextComponent message) {
+    public void sendToMinecraft(Component message) {
         DiscordSRV.get().getServer().getOnlinePlayers().forEach(player -> player.sendMessage(message));
     }
 

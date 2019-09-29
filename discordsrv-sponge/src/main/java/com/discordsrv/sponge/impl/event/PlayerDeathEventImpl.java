@@ -5,7 +5,6 @@ import com.discordsrv.common.api.event.PlayerDeathEvent;
 import com.discordsrv.common.api.event.PublishCancelableEvent;
 import lombok.Getter;
 import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.entity.DestructEntityEvent;

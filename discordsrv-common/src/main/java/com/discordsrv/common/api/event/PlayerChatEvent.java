@@ -21,7 +21,6 @@ package com.discordsrv.common.api.event;
 import com.discordsrv.common.abstracted.channel.Channel;
 import com.discordsrv.common.api.PublishCancelable;
 import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
 
 public interface PlayerChatEvent extends PublishCancelable, PlayerEvent {
 

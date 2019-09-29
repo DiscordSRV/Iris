@@ -6,7 +6,6 @@ import com.discordsrv.common.api.event.PlayerChatEvent;
 import com.discordsrv.common.api.event.PublishCancelableEvent;
 import com.discordsrv.sponge.impl.PlayerImpl;
 import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.text.serializer.TextSerializers;

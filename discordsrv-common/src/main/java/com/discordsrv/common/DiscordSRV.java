@@ -36,6 +36,9 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.kyori.text.KeybindComponent;
+import net.kyori.text.TranslatableComponent;
+import net.kyori.text.serializer.plain.PlainComponentSerializer;
 import okhttp3.OkHttpClient;
 
 import javax.annotation.Nonnull;
@@ -49,6 +52,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class DiscordSRV {
+
+    public static final PlainComponentSerializer PLAIN_SERIALIZER = new PlainComponentSerializer(KeybindComponent::keybind, TranslatableComponent::key);
 
     private static DiscordSRV INSTANCE;
 

@@ -19,12 +19,13 @@
 package com.discordsrv.common.api.event;
 
 import com.discordsrv.common.api.PublishCancelable;
+import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 
 public interface PlayerConnectionEvent extends PublishCancelable, PlayerEvent {
 
     boolean isFirstTime();
-    TextComponent getMessage();
+    Component getMessage();
     State getState();
 
     enum State {

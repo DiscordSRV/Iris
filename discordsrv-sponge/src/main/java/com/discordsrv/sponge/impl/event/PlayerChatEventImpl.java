@@ -5,6 +5,7 @@ import com.discordsrv.common.abstracted.channel.Channel;
 import com.discordsrv.common.api.event.PlayerChatEvent;
 import com.discordsrv.common.api.event.PublishCancelableEvent;
 import com.discordsrv.sponge.impl.PlayerImpl;
+import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.event.message.MessageChannelEvent;
@@ -13,12 +14,12 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 public class PlayerChatEventImpl extends PublishCancelableEvent implements PlayerChatEvent {
 
     private final MessageChannelEvent event;
-    private final TextComponent message;
+    private final Component message;
     private final Channel channel;
 
     public PlayerChatEventImpl(MessageChannelEvent event, Channel channel) {
         this.event = event;
-        this.message = (TextComponent) GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(event.getMessage()));
+        this.message = GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(event.getMessage()));
         this.channel = channel; //TODO: get from MessageChannel (MessageChannel -> channel)
         this.setPublishCanceled(event.isMessageCancelled());
     }
@@ -29,7 +30,7 @@ public class PlayerChatEventImpl extends PublishCancelableEvent implements Playe
     }
 
     @Override
-    public TextComponent getMessage() {
+    public Component getMessage() {
         return message;
     }
 

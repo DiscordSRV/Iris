@@ -4,6 +4,7 @@ import com.discordsrv.common.abstracted.Player;
 import com.discordsrv.common.api.event.PlayerDeathEvent;
 import com.discordsrv.common.api.event.PublishCancelableEvent;
 import lombok.Getter;
+import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.entity.Entity;
@@ -13,11 +14,11 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 public class PlayerDeathEventImpl extends PublishCancelableEvent implements PlayerDeathEvent {
 
     private final DestructEntityEvent.Death event;
-    @Getter private final TextComponent message;
+    @Getter private final Component message;
 
     public PlayerDeathEventImpl(DestructEntityEvent.Death event) {
         this.event = event;
-        this.message = (TextComponent) GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(event.getMessage()));
+        this.message = GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(event.getMessage()));
         this.setPublishCanceled(event.isCancelled() || event.isMessageCancelled());
     }
 

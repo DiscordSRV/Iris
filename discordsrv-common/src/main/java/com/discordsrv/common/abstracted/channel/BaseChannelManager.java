@@ -18,6 +18,7 @@
 
 package com.discordsrv.common.abstracted.channel;
 
+import com.discordsrv.common.DiscordSRV;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -54,7 +55,7 @@ public abstract class BaseChannelManager extends ListenerAdapter implements Chan
         // handle attachments //TODO add config option to turn off translating attachments
         if (event.getMessage().getAttachments().size() > 0) {
             // add a space if there was more to this message than just attachments
-            if (StringUtils.isNotBlank(whatWasSaid.build().content())) whatWasSaid.append(TextComponent.space());
+            if (StringUtils.isNotBlank(DiscordSRV.PLAIN_SERIALIZER.serialize(whatWasSaid.build()))) whatWasSaid.append(TextComponent.space());
 
             for (Iterator<Message.Attachment> i = event.getMessage().getAttachments().iterator(); i.hasNext();) {
                 Message.Attachment attachment = i.next();

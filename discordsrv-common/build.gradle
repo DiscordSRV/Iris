@@ -21,7 +21,8 @@ dependencies {
     compile 'org.jooq:joor-java-8:0.9.7' // reflections frontend //TODO probably remove this, not very needed
     compile 'net.dv8tion:JDA:4.BETA.0_24' // Discord library
     compile 'club.minnced:discord-webhooks:0.1.7' // discord-webhooks //TODO investigate if this is actually gonna be used
-    compile 'net.kyori:text-api:3.0.0' // cross-platform text formatting api
+    compile 'net.kyori:text-api:3.0.2' // cross-platform text formatting api
+    compile 'net.kyori:text-serializer-plain:3.0.2' // plain text serializer
     compile 'me.vankka:MCDiscordReserializer:1.0' // MC <-> Discord formatting reserializer
     compile 'github.scarsz:configuralize:1.1' // config
     compile 'io.javalin:javalin:3.5.0' // embedded http server for rest api

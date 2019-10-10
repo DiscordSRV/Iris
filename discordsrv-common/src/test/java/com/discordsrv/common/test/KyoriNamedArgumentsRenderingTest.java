@@ -19,6 +19,7 @@
 package com.discordsrv.common.test;
 
 import com.discordsrv.common.Text;
+import net.kyori.text.TextComponent;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,10 +27,10 @@ public class KyoriNamedArgumentsRenderingTest {
 
     @Test
     public void test() {
-        String testOneRendered = Text.asPlain(Text.KYORI_TEST_INDEX_SUBSTITUTION.render("Person 1", "Person 2"));
+        String testOneRendered = Text.asPlain(Text.KYORI_TEST_INDEX_SUBSTITUTION.render("Person 1", TextComponent.of("Person 2")));
         String testTwoRendered = Text.asPlain(Text.KYORI_TEST_NAME_SUBSTITUTION.renderNamedArgs(
                 "the first person", "Person 1",
-                "the second person", "Person 2"
+                "the second person", TextComponent.of("Person 2")
         ));
 
         System.out.println("Index-based substitution: " + Text.KYORI_TEST_INDEX_SUBSTITUTION.getRawFormat() + "\n-> " + testOneRendered);

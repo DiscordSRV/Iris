@@ -16,9 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.api.event;
+package com.discordsrv.common.api.event.game;
 
-import com.discordsrv.common.api.PublishCancelable;
 import net.kyori.text.Component;
 
 public interface PlayerDeathEvent extends PublishCancelable, PlayerEvent {

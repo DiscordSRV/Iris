@@ -18,11 +18,12 @@
 
 package com.discordsrv.common.abstracted.channel;
 
-import com.discordsrv.common.DiscordSRV;
+import com.discordsrv.common.Text;
+import com.discordsrv.common.api.ListenerPriority;
+import com.discordsrv.common.api.Subscribe;
+import com.discordsrv.common.api.event.discord.GuildMessageProcessingEvent;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
@@ -30,18 +31,21 @@ import net.kyori.text.format.TextColor;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class BaseChannelManager extends ListenerAdapter implements ChannelManager {
+public abstract class BaseChannelManager implements ChannelManager {
 
     @Getter private Set<BaseChannel> channels = new HashSet<>();
 
-    @Override
-    public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
+    @Subscribe(priority = ListenerPriority.MONITOR)
+    public void onGuildMessageProcessingEventEvent(GuildMessageProcessingEvent event) {
+        // return if event was already handled by something else, such as canned responses
+        // otherwise, set the event to be handled as the channel manager is the final stop
+        if (event.isHandled()) return; else event.setHandled(true);
+
         //TODO #getMember == null when the message is from a webhook. maybe investigate accepting webhook messages
         if (event.getMember() == null || event.getAuthor().equals(event.getJDA().getSelfUser())) return;
 
@@ -55,15 +59,16 @@ public abstract class BaseChannelManager extends ListenerAdapter implements Chan
         // handle attachments //TODO add config option to turn off translating attachments
         if (event.getMessage().getAttachments().size() > 0) {
             // add a space if there was more to this message than just attachments
-            if (StringUtils.isNotBlank(DiscordSRV.PLAIN_SERIALIZER.serialize(whatWasSaid.build()))) whatWasSaid.append(TextComponent.space());
+            if (StringUtils.isNotBlank(Text.asPlain(whatWasSaid.build()))) whatWasSaid.append(TextComponent.space());
+
+            TextComponent leftArrow = TextComponent.of("<").color(TextColor.WHITE);
+            TextComponent rightArrow = TextComponent.of(">").color(TextColor.WHITE);
 
             for (Iterator<Message.Attachment> i = event.getMessage().getAttachments().iterator(); i.hasNext();) {
                 Message.Attachment attachment = i.next();
                 String extension = (attachment.isImage() ? attachment.getWidth() + "x" + attachment.getHeight() + " " : "")
                         + "." + FilenameUtils.getExtension(attachment.getFileName());
-                TextComponent leftArrow = TextComponent.of("<").color(TextColor.WHITE);
                 TextComponent file = TextComponent.of(attachment.getFileName()).color(TextColor.AQUA);
-                TextComponent rightArrow = TextComponent.of(">").color(TextColor.WHITE);
                 TextComponent hover = TextComponent
                         .of("File: ").color(TextColor.AQUA).append(TextComponent.of(attachment.getFileName()).color(TextColor.WHITE))
                         .append(TextComponent.of("\nType: ")).color(TextColor.AQUA).append(TextComponent.of(extension).color(TextColor.WHITE))
@@ -76,7 +81,7 @@ public abstract class BaseChannelManager extends ListenerAdapter implements Chan
                         .hoverEvent(HoverEvent.showText(hover))
                 );
 
-                if (i.hasNext()) whatWasSaid.append(TextComponent.empty());
+                if (i.hasNext()) whatWasSaid.append(TextComponent.space());
             }
         }
 

@@ -16,9 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.api.event;
+package com.discordsrv.common.api.event.game;
 
 import com.discordsrv.common.abstracted.Player;
+import com.discordsrv.common.api.event.Event;
 
 public interface PlayerEvent extends Event {
 

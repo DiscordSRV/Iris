@@ -16,12 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.api.event;
+package com.discordsrv.common.api.event.game;
 
-import com.discordsrv.common.api.PublishCancelable;
+public interface PublishCancelable {
 
-public interface PlayerAwardedEvent extends PublishCancelable, PlayerEvent {
+    void setWillPublish(boolean willPublish);
+    boolean willPublish();
 
-    String getAward();
+    default void cancelPublish() {
+        setWillPublish(false);
+    }
+    default void setWillPublish() {
+        setWillPublish(true);
+    }
 
 }

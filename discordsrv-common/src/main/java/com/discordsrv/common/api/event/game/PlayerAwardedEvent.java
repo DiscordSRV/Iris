@@ -16,22 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.api.event;
+package com.discordsrv.common.api.event.game;
 
-import com.discordsrv.common.api.PublishCancelable;
-import net.kyori.text.Component;
+public interface PlayerAwardedEvent extends PublishCancelable, PlayerEvent {
 
-public interface PlayerConnectionEvent extends PublishCancelable, PlayerEvent {
-
-    boolean isFirstTime();
-    Component getMessage();
-    State getState();
-
-    enum State {
-
-        JOIN,
-        QUIT
-
-    }
+    String getAward();
 
 }

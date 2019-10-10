@@ -1,15 +1,13 @@
 package com.discordsrv.sponge.impl.event;
 
 import com.discordsrv.common.abstracted.Player;
-import com.discordsrv.common.api.event.PlayerDeathEvent;
-import com.discordsrv.common.api.event.PublishCancelableEvent;
+import com.discordsrv.common.api.event.game.PlayerDeathEvent;
+import com.discordsrv.common.api.event.game.PublishCancelableEvent;
 import com.discordsrv.sponge.SpongePlugin;
 import lombok.Getter;
 import net.kyori.text.Component;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 public class PlayerDeathEventImpl extends PublishCancelableEvent implements PlayerDeathEvent {
 
@@ -19,7 +17,7 @@ public class PlayerDeathEventImpl extends PublishCancelableEvent implements Play
     public PlayerDeathEventImpl(DestructEntityEvent.Death event) {
         this.event = event;
         this.message = SpongePlugin.get().serialize(event.getMessage());
-        this.setPublishCanceled(event.isCancelled() || event.isMessageCancelled());
+        this.setWillPublish(!event.isCancelled() && !event.isMessageCancelled());
     }
 
     @Override

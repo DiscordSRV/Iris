@@ -16,22 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.listener;
+package com.discordsrv.common.api.event.discord;
 
-import com.discordsrv.common.Text;
-import com.discordsrv.common.api.ListenerPriority;
-import com.discordsrv.common.api.Subscribe;
-import com.discordsrv.common.api.event.game.PlayerChatEvent;
-import com.discordsrv.common.logging.Log;
+import lombok.Getter;
+import lombok.Setter;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class PlayerChatListener {
+public class GuildMessageProcessingEvent extends GuildMessageReceivedEvent implements HandledEvent {
 
-    @Subscribe(priority = ListenerPriority.MONITOR)
-    public void onChat(PlayerChatEvent event) {
-        Log.debug("Received " + (!event.willPublish() ? "NON-PUBLISHING " : "") + "chat event: " + event.getPlayer().getName() + " -> " + event.getChannel() + " > " + Text.asPlain(event.getMessage()));
-        if (event.willPublish()) return;
+    @Getter @Setter private boolean handled = false;
 
-
+    public GuildMessageProcessingEvent(GuildMessageReceivedEvent raw) {
+        super(raw.getJDA(), raw.getResponseNumber(), raw.getMessage());
     }
 
 }

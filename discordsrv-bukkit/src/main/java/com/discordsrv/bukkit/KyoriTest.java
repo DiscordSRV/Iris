@@ -16,19 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.api;
+package com.discordsrv.bukkit;
 
-public interface PublishCancelable {
+import com.discordsrv.common.Text;
+import net.kyori.text.Component;
 
-    default void cancelPublish() {
-        setPublishCanceled(true);
+public class KyoriTest {
+
+    public static void main(String[] args) {
+        Component rendered = Text.KYORI_TEST_ONE.render("Person 1", "Person 2");
+        System.out.println(Text.asPlain(rendered));
+
+        rendered = Text.KYORI_TEST_TWO.renderNamedArgs(
+                "suspect", "Person 1",
+                "victim", "Person 2"
+        );
+        System.out.println(Text.asPlain(rendered));
     }
-
-    default void setShouldPublish() {
-        setPublishCanceled(false);
-    }
-
-    void setPublishCanceled(boolean cancelled);
-    boolean isPublishCanceled();
 
 }

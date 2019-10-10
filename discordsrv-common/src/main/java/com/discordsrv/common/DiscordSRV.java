@@ -22,8 +22,9 @@ import com.discordsrv.common.abstracted.PluginManager;
 import com.discordsrv.common.abstracted.Server;
 import com.discordsrv.common.abstracted.channel.ChannelManager;
 import com.discordsrv.common.api.EventBus;
-import com.discordsrv.common.dynamic.Localized;
+import com.discordsrv.common.api.event.discord.GuildMessageProcessingEvent;
 import com.discordsrv.common.listener.PlayerChatListener;
+import com.discordsrv.common.listener.discord.DiscordCannedResponseListener;
 import com.discordsrv.common.logging.Log;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
@@ -35,10 +36,8 @@ import lombok.NonNull;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.ShutdownEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.kyori.text.KeybindComponent;
-import net.kyori.text.TranslatableComponent;
-import net.kyori.text.serializer.plain.PlainComponentSerializer;
 import okhttp3.OkHttpClient;
 
 import javax.annotation.Nonnull;
@@ -52,8 +51,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class DiscordSRV {
-
-    public static final PlainComponentSerializer PLAIN_SERIALIZER = new PlainComponentSerializer(KeybindComponent::keybind, TranslatableComponent::key);
 
     private static DiscordSRV INSTANCE;
 
@@ -91,7 +88,7 @@ public class DiscordSRV {
                         .filter(language -> language.getCode().equalsIgnoreCase(s) ||
                                             language.name().equalsIgnoreCase(s))
                         .findFirst())
-                .ifPresent(Localized::setLanguage);
+                .ifPresent(Text::setLanguage);
 
         this.channelManager = channelManager;
         this.channelManager.load();
@@ -111,13 +108,19 @@ public class DiscordSRV {
                 .setToken(System.getenv("DISCORDSRV_TOKEN") != null
                         ? System.getenv("DISCORDSRV_TOKEN")
                         : config.getString("Token"))
-                .addEventListeners(channelManager)
+                .addEventListeners(new ListenerAdapter() {
+                    @Override
+                    public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
+                        eventBus.publish(new GuildMessageProcessingEvent(event));
+                    }
+                })
                 .build().awaitReady();
 
         registerListeners();
     }
 
     private void registerListeners() {
+        if (eventBus.getListener(DiscordCannedResponseListener.class) == null) eventBus.subscribe(new DiscordCannedResponseListener());
         if (eventBus.getListener(PlayerChatListener.class) == null) eventBus.subscribe(new PlayerChatListener());
     }
 

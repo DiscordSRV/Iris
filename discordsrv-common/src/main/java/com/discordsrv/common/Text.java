@@ -43,8 +43,8 @@ public class Text {
     public static final Definition ASM_NEEDS_TO_BE_UPDATED = new Definition("asm")
             .localize(Language.EN, "Your server is using an older version of ASM. You must manually update it.")
             .localize(Language.FR, "hon hon baguette eiffel tower");
-    public static final Text.Definition KYORI_TEST_INDEX_SUBSTITUTION = new Text.Definition("kyori.test.1", "{0} interacted with {1}");
-    public static final Text.Definition KYORI_TEST_NAME_SUBSTITUTION = new Text.Definition("kyori.test.2", "{the first person} interacted with {the second person}");
+    public static final Definition KYORI_TEST_INDEX_SUBSTITUTION = new Definition("kyori.test.1", "{0} interacted with {1}");
+    public static final Definition KYORI_TEST_NAME_SUBSTITUTION = new Definition("kyori.test.2", "{the first person} interacted with {the second person}");
 
     public static Definition get(String key) {
         return definitions.stream()

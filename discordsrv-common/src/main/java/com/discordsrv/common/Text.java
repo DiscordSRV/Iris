@@ -113,8 +113,13 @@ public class Text {
 
         public Component render(Object... args) {
             return render(Arrays.stream(args)
-                    .map(String::valueOf)
-                    .map(TextComponent::of)
+                    .map(o -> {
+                        if (o instanceof Component) {
+                            return (Component) o;
+                        } else {
+                            return TextComponent.of(o.toString());
+                        }
+                    })
                     .toArray(Component[]::new)
             );
         }

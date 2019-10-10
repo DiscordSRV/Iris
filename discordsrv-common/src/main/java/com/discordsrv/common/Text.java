@@ -43,10 +43,8 @@ public class Text {
     public static final Definition ASM_NEEDS_TO_BE_UPDATED = new Definition("asm")
             .localize(Language.EN, "Your server is using an older version of ASM. You must manually update it.")
             .localize(Language.FR, "hon hon baguette eiffel tower");
-    public static final Definition KYORI_TEST_ONE = new Definition("kyori.test.1")
-            .localize(Language.EN, "{0} killed {1}");
-    public static final Definition KYORI_TEST_TWO = new Definition("kyori.test.2")
-            .localize(Language.EN, "{suspect} killed {victim}");
+    public static final Text.Definition KYORI_TEST_INDEX_SUBSTITUTION = new Text.Definition("kyori.test.1", "{0} interacted with {1}");
+    public static final Text.Definition KYORI_TEST_NAME_SUBSTITUTION = new Text.Definition("kyori.test.2", "{the first person} interacted with {the second person}");
 
     public static Definition get(String key) {
         return definitions.stream()
@@ -75,12 +73,17 @@ public class Text {
         @Getter private final Map<Language, MessageFormat> translations = new HashMap<>();
         @Getter private final Set<String> expectedArguments = new LinkedHashSet<>();
 
-        Definition(String key) {
+        public Definition(String key) {
             this.key = key;
             Text.definitions.add(this);
         }
 
-        private Definition localize(Language language, String format) {
+        public Definition(String key, String english) {
+            this(key);
+            this.localize(Language.EN, english);
+        }
+
+        public Definition localize(Language language, String format) {
             StringBuilder reading = null;
             char[] chars = format.toCharArray();
             for (int i = 0; i < chars.length; i++) {
@@ -164,10 +167,17 @@ public class Text {
         }
 
         public MessageFormat getFormat() {
-            return translations.getOrDefault(Text.getLanguage(), translations.get(Language.EN));
+            return getFormat(Text.getLanguage());
         }
         public MessageFormat getFormat(Language language) {
             return translations.getOrDefault(language, translations.get(Language.EN));
+        }
+
+        public String getRawFormat() {
+            return getRawFormat(Text.getLanguage());
+        }
+        public String getRawFormat(Language language) {
+            return rawFormats.getOrDefault(language, rawFormats.get(Language.EN));
         }
 
         @Override

@@ -25,7 +25,7 @@ import org.junit.Test;
 public class KyoriNamedArgumentsRenderingTest {
 
     @Test
-    public void name() {
+    public void test() {
         String testOneRendered = Text.asPlain(Text.KYORI_TEST_INDEX_SUBSTITUTION.render("Person 1", "Person 2"));
         String testTwoRendered = Text.asPlain(Text.KYORI_TEST_NAME_SUBSTITUTION.renderNamedArgs(
                 "the first person", "Person 1",

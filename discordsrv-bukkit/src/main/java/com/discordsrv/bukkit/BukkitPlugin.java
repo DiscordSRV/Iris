@@ -52,16 +52,17 @@ public final class BukkitPlugin extends JavaPlugin implements Logger {
                     .server(new ServerImpl())
                     .build();
         } catch (IOException e) {
-            getLogger().severe("I/O exception while saving configuration files");
+            Log.error("I/O exception while saving configuration files");
             e.printStackTrace();
             srv = null;
             return;
         } catch (LoginException | InterruptedException e) {
-            getLogger().severe("Failed to login to Discord");
+            Log.error("Failed to login to Discord");
             e.printStackTrace();
             srv = null;
             return;
         } catch (Exception e) {
+            Log.error(e.getMessage());
             e.printStackTrace();
             srv = null;
             return;

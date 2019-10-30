@@ -19,11 +19,12 @@
 package com.discordsrv.bukkit.impl.event;
 
 import com.discordsrv.bukkit.impl.PlayerImpl;
-import com.discordsrv.common.api.event.PlayerDeathEvent;
-import com.discordsrv.common.api.event.PublishCancelableEvent;
+import com.discordsrv.common.api.event.game.PlayerDeathEvent;
+import com.discordsrv.common.api.event.game.PublishCancelableEvent;
 import lombok.Getter;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import org.apache.commons.lang3.StringUtils;
 
 public class PlayerDeathEventImpl extends PublishCancelableEvent implements PlayerDeathEvent {
 
@@ -32,9 +33,10 @@ public class PlayerDeathEventImpl extends PublishCancelableEvent implements Play
 
     public PlayerDeathEventImpl(org.bukkit.event.entity.PlayerDeathEvent rawEvent) {
         this.rawEvent = rawEvent;
-        this.message = this.rawEvent.getDeathMessage() != null
+        this.message = rawEvent.getDeathMessage() != null
                 ? LegacyComponentSerializer.INSTANCE.deserialize(this.rawEvent.getDeathMessage())
                 : TextComponent.empty();
+        this.setWillPublish(StringUtils.isNotBlank(rawEvent.getDeathMessage()));
     }
 
     @Override

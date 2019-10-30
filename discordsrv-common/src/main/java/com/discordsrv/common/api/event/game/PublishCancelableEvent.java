@@ -16,22 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.api.event;
+package com.discordsrv.common.api.event.game;
 
-import com.discordsrv.common.api.PublishCancelable;
-import net.kyori.text.Component;
+import lombok.Setter;
 
-public interface PlayerConnectionEvent extends PublishCancelable, PlayerEvent {
+public abstract class PublishCancelableEvent implements PublishCancelable {
 
-    boolean isFirstTime();
-    Component getMessage();
-    State getState();
+    @Setter private boolean willPublish = true;
 
-    enum State {
-
-        JOIN,
-        QUIT
-
+    public boolean willPublish() {
+        return willPublish;
     }
 
 }

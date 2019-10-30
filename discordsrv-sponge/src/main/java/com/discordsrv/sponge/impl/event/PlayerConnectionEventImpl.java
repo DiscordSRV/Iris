@@ -1,16 +1,14 @@
 package com.discordsrv.sponge.impl.event;
 
 import com.discordsrv.common.abstracted.Player;
-import com.discordsrv.common.api.event.PlayerConnectionEvent;
-import com.discordsrv.common.api.event.PublishCancelableEvent;
+import com.discordsrv.common.api.event.game.PlayerConnectionEvent;
+import com.discordsrv.common.api.event.game.PublishCancelableEvent;
 import com.discordsrv.sponge.SpongePlugin;
 import com.discordsrv.sponge.impl.PlayerImpl;
 import net.kyori.text.Component;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.event.entity.living.humanoid.player.TargetPlayerEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 public class PlayerConnectionEventImpl extends PublishCancelableEvent implements PlayerConnectionEvent {
 
@@ -22,7 +20,7 @@ public class PlayerConnectionEventImpl extends PublishCancelableEvent implements
         this.player = ((TargetPlayerEvent) event).getTargetEntity();
         this.message = SpongePlugin.get().serialize(((MessageChannelEvent) event).getMessage());
         this.state = event instanceof ClientConnectionEvent.Join ? State.JOIN : State.QUIT;
-        this.setPublishCanceled(((MessageChannelEvent) event).isMessageCancelled());
+        this.setWillPublish(!((MessageChannelEvent) event).isMessageCancelled());
     }
 
     @Override

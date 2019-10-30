@@ -21,8 +21,8 @@ package com.discordsrv.bukkit.impl.event;
 import com.discordsrv.bukkit.impl.PlayerImpl;
 import com.discordsrv.common.abstracted.Player;
 import com.discordsrv.common.abstracted.channel.Channel;
-import com.discordsrv.common.api.event.PlayerChatEvent;
-import com.discordsrv.common.api.event.PublishCancelableEvent;
+import com.discordsrv.common.api.event.game.PlayerChatEvent;
+import com.discordsrv.common.api.event.game.PublishCancelableEvent;
 import lombok.Getter;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -38,6 +38,7 @@ public class PlayerChatEventImpl extends PublishCancelableEvent implements Playe
         this.rawEvent = rawEvent;
         this.channel = channel;
         this.message = LegacyComponentSerializer.INSTANCE.deserialize(rawEvent.getMessage());
+        this.setWillPublish(!rawEvent.isCancelled());
     }
 
     @Override

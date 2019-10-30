@@ -16,14 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.api.event;
+package com.discordsrv.common.api.event.discord;
 
-import com.discordsrv.common.api.PublishCancelable;
 import lombok.Getter;
 import lombok.Setter;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public abstract class PublishCancelableEvent implements PublishCancelable {
+public class GuildMessageProcessingEvent extends GuildMessageReceivedEvent implements HandledEvent {
 
-    @Getter @Setter private boolean publishCanceled = false;
+    @Getter @Setter private boolean handled = false;
+
+    public GuildMessageProcessingEvent(GuildMessageReceivedEvent raw) {
+        super(raw.getJDA(), raw.getResponseNumber(), raw.getMessage());
+    }
 
 }

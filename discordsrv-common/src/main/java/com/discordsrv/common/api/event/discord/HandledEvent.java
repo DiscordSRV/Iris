@@ -16,15 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.api.event;
+package com.discordsrv.common.api.event.discord;
 
-import com.discordsrv.common.abstracted.channel.Channel;
-import com.discordsrv.common.api.PublishCancelable;
-import net.kyori.text.Component;
+import com.discordsrv.common.api.event.Event;
 
-public interface PlayerChatEvent extends PublishCancelable, PlayerEvent {
+public interface HandledEvent extends Event {
 
-    Channel getChannel();
-    Component getMessage();
+    boolean isHandled();
+    void setHandled(boolean handled);
 
 }

@@ -16,19 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.api;
+package com.discordsrv.common.api.event.game;
 
-public interface PublishCancelable {
+import net.kyori.text.Component;
 
-    default void cancelPublish() {
-        setPublishCanceled(true);
-    }
+public interface PlayerDeathEvent extends PublishCancelable, PlayerEvent {
 
-    default void setShouldPublish() {
-        setPublishCanceled(false);
-    }
-
-    void setPublishCanceled(boolean cancelled);
-    boolean isPublishCanceled();
+    Component getMessage();
 
 }

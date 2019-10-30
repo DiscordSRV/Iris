@@ -16,22 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.listener;
+package com.discordsrv.common.api.event.game;
 
-import com.discordsrv.common.Text;
-import com.discordsrv.common.api.ListenerPriority;
-import com.discordsrv.common.api.Subscribe;
-import com.discordsrv.common.api.event.game.PlayerChatEvent;
-import com.discordsrv.common.logging.Log;
+import com.discordsrv.common.abstracted.channel.Channel;
+import net.kyori.text.Component;
 
-public class PlayerChatListener {
+public interface PlayerChatEvent extends PublishCancelable, PlayerEvent {
 
-    @Subscribe(priority = ListenerPriority.MONITOR)
-    public void onChat(PlayerChatEvent event) {
-        Log.debug("Received " + (!event.willPublish() ? "NON-PUBLISHING " : "") + "chat event: " + event.getPlayer().getName() + " -> " + event.getChannel() + " > " + Text.asPlain(event.getMessage()));
-        if (event.willPublish()) return;
-
-
-    }
+    Channel getChannel();
+    Component getMessage();
 
 }

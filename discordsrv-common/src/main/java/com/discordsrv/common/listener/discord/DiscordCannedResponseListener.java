@@ -16,22 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.listener;
+package com.discordsrv.common.listener.discord;
 
-import com.discordsrv.common.Text;
-import com.discordsrv.common.api.ListenerPriority;
 import com.discordsrv.common.api.Subscribe;
-import com.discordsrv.common.api.event.game.PlayerChatEvent;
-import com.discordsrv.common.logging.Log;
+import com.discordsrv.common.api.event.discord.GuildMessageProcessingEvent;
 
-public class PlayerChatListener {
+public class DiscordCannedResponseListener {
 
-    @Subscribe(priority = ListenerPriority.MONITOR)
-    public void onChat(PlayerChatEvent event) {
-        Log.debug("Received " + (!event.willPublish() ? "NON-PUBLISHING " : "") + "chat event: " + event.getPlayer().getName() + " -> " + event.getChannel() + " > " + Text.asPlain(event.getMessage()));
-        if (event.willPublish()) return;
+    @Subscribe
+    public void onGuildProcessingReceived(GuildMessageProcessingEvent event) {
+        // event was already handled by something else, such as canned responses
+        if (event.isHandled()) return;
 
+        //TODO #getMember == null when the message is from a webhook. maybe investigate accepting webhook messages
+        if (event.getMember() == null || event.getAuthor().equals(event.getJDA().getSelfUser())) return;
 
+        //TODO configuration
+        if (event.getMessage().getContentRaw().equals("!ip")) {
+            event.getChannel().sendMessage("discordsrv.com").queue();
+            event.setHandled(true);
+        }
     }
 
 }

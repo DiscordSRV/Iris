@@ -19,8 +19,8 @@
 package com.discordsrv.bukkit.impl.event;
 
 import com.discordsrv.bukkit.impl.PlayerImpl;
-import com.discordsrv.common.api.event.PlayerAwardedEvent;
-import com.discordsrv.common.api.event.PublishCancelableEvent;
+import com.discordsrv.common.api.event.game.PlayerAwardedEvent;
+import com.discordsrv.common.api.event.game.PublishCancelableEvent;
 import lombok.Getter;
 import org.bukkit.event.player.PlayerEvent;
 

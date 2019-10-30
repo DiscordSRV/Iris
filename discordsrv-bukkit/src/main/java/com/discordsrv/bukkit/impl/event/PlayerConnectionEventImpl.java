@@ -20,11 +20,12 @@ package com.discordsrv.bukkit.impl.event;
 
 import com.discordsrv.bukkit.impl.PlayerImpl;
 import com.discordsrv.common.abstracted.Player;
-import com.discordsrv.common.api.event.PlayerConnectionEvent;
-import com.discordsrv.common.api.event.PublishCancelableEvent;
+import com.discordsrv.common.api.event.game.PlayerConnectionEvent;
+import com.discordsrv.common.api.event.game.PublishCancelableEvent;
 import lombok.Getter;
-import net.kyori.text.TextComponent;
+import net.kyori.text.Component;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -32,19 +33,21 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class PlayerConnectionEventImpl extends PublishCancelableEvent implements PlayerConnectionEvent {
 
     @Getter private final PlayerEvent rawEvent;
-    @Getter private final TextComponent message;
+    @Getter private final Component message;
     @Getter private final State state;
 
     public PlayerConnectionEventImpl(PlayerJoinEvent rawEvent) {
         this.rawEvent = rawEvent;
         this.message = LegacyComponentSerializer.INSTANCE.deserialize(rawEvent.getJoinMessage());
         this.state = State.JOIN;
+        this.setWillPublish(StringUtils.isNotBlank(rawEvent.getJoinMessage()));
     }
 
     public PlayerConnectionEventImpl(PlayerQuitEvent rawEvent) {
         this.rawEvent = rawEvent;
         this.message = LegacyComponentSerializer.INSTANCE.deserialize(rawEvent.getQuitMessage());
         this.state = State.QUIT;
+        this.setWillPublish(StringUtils.isNotBlank(rawEvent.getQuitMessage()));
     }
 
     @Override

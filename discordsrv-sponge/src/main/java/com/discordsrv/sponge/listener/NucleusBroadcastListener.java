@@ -1,4 +1,4 @@
-package com.discordsrv.sponge.listener.chat;
+package com.discordsrv.sponge.listener;
 
 import com.discordsrv.sponge.SpongePlugin;
 import io.github.nucleuspowered.nucleus.api.events.NucleusTextTemplateEvent;

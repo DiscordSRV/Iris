@@ -16,31 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.sponge.listener.chat;
+package com.discordsrv.sponge.listener.message.chat;
 
 import com.discordsrv.common.DiscordSRV;
-import com.discordsrv.sponge.SpongePlugin;
+import com.discordsrv.sponge.event.MessageEventListener;
 import com.discordsrv.sponge.impl.event.PlayerChatEventImpl;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.filter.IsCancelled;
-import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.message.MessageChannelEvent;
-import org.spongepowered.api.util.Tristate;
 
-public class ChatListener {
+public class ChatListener extends MessageEventListener {
 
-    @Listener(order = Order.POST)
-    @IsCancelled(Tristate.UNDEFINED)
-    public void onChatEvent(MessageChannelEvent.Chat event, @First Player player) {
-        SpongePlugin.get().getAsyncExecutor().execute(() -> handle(event, player));
+//    @Listener(order = Order.POST)
+//    @IsCancelled(Tristate.UNDEFINED)
+//    public void onChatEvent(MessageChannelEvent.Chat event, @First Player player) {
+//        SpongePlugin.get().getAsyncExecutor().execute(() -> handle(event));
+//    }
+
+    @Override
+    public boolean onEvent(MessageChannelEvent event) {
+        if (event instanceof MessageChannelEvent.Chat && event.getCause().first(Player.class).isPresent()) {
+            handle((MessageChannelEvent.Chat) event);
+            return true;
+        }
+        return false;
     }
 
-    private void handle(MessageChannelEvent event, Player player) {
-        DiscordSRV.get().getChannelManager().getChannel("global").ifPresent(c ->
-                DiscordSRV.get().getEventBus().publish(new PlayerChatEventImpl(event, c))
+    private void handle(MessageChannelEvent.Chat event) {
+        DiscordSRV.get().getChannelManager().getChannel("global").ifPresent(channel ->
+                DiscordSRV.get().getEventBus().publish(new PlayerChatEventImpl(event, channel))
         );
     }
-
 }

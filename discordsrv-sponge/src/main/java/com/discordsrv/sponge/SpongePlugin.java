@@ -20,16 +20,18 @@ package com.discordsrv.sponge;
 
 import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.logging.Log;
+import com.discordsrv.sponge.event.MessageListener;
 import com.discordsrv.sponge.impl.PluginManagerImpl;
 import com.discordsrv.sponge.impl.ServerImpl;
 import com.discordsrv.sponge.impl.channel.ChannelManagerImpl;
 import com.discordsrv.sponge.listener.NucleusAfkListener;
-import com.discordsrv.sponge.listener.chat.ChatListener;
-import com.discordsrv.sponge.listener.PlayerConnectionListener;
-import com.discordsrv.sponge.listener.PlayerDeathListener;
-import com.discordsrv.sponge.listener.award.PlayerAchievementListener;
-import com.discordsrv.sponge.listener.award.PlayerAdvancementListener;
-import com.discordsrv.sponge.listener.chat.NucleusBroadcastListener;
+import com.discordsrv.sponge.listener.message.GenericMessageListener;
+import com.discordsrv.sponge.listener.message.chat.ChatListener;
+import com.discordsrv.sponge.listener.message.PlayerConnectionListener;
+import com.discordsrv.sponge.listener.message.PlayerDeathListener;
+import com.discordsrv.sponge.listener.message.award.PlayerAchievementListener;
+import com.discordsrv.sponge.listener.message.award.PlayerAdvancementListener;
+import com.discordsrv.sponge.listener.NucleusBroadcastListener;
 import com.google.inject.Inject;
 import github.scarsz.configuralize.ParseException;
 import lombok.Getter;
@@ -98,19 +100,22 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
 
         try {
             Class.forName("org.spongepowered.api.event.advancement.AdvancementEvent");
-            Sponge.getEventManager().registerListeners(this, new PlayerAdvancementListener());
+            MessageListener.LISTENERS.add(new PlayerAdvancementListener());
         } catch (ClassNotFoundException ignored) {
-            Sponge.getEventManager().registerListeners(this, new PlayerAchievementListener());
+            MessageListener.LISTENERS.add(new PlayerAchievementListener());
         }
-        Sponge.getEventManager().registerListeners(this, new ChatListener());
-        Sponge.getEventManager().registerListeners(this, new PlayerConnectionListener());
-        Sponge.getEventManager().registerListeners(this, new PlayerDeathListener());
+        MessageListener.LISTENERS.add(new ChatListener());
+        MessageListener.LISTENERS.add(new PlayerConnectionListener());
+        MessageListener.LISTENERS.add(new PlayerDeathListener());
+        MessageListener.LISTENERS.add(new GenericMessageListener());
+
+        Sponge.getEventManager().registerListeners(this, new MessageListener());
 
         // for plugin hooks, fully-qualified package names are used to avoid loading classes
         // that might not have their respective plugin's classes available
         if (Sponge.getPluginManager().isLoaded("nucleus")) {
-            Sponge.getEventManager().registerListeners(this, new NucleusAfkListener());
-            Sponge.getEventManager().registerListeners(this, new NucleusBroadcastListener());
+            Sponge.getEventManager().registerListeners(this, new com.discordsrv.sponge.listener.NucleusAfkListener());
+            Sponge.getEventManager().registerListeners(this, new com.discordsrv.sponge.listener.NucleusBroadcastListener());
         }
     }
 

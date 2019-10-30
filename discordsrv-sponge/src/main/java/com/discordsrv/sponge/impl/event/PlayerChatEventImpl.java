@@ -13,12 +13,12 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 public class PlayerChatEventImpl extends PublishCancelableEvent implements PlayerChatEvent {
 
-    private final MessageChannelEvent event;
+    private final org.spongepowered.api.entity.living.player.Player player;
     private final Component message;
     private final Channel channel;
 
-    public PlayerChatEventImpl(MessageChannelEvent event, Channel channel) {
-        this.event = event;
+    public PlayerChatEventImpl(MessageChannelEvent.Chat event, Channel channel) {
+        this.player = event.getCause().first(org.spongepowered.api.entity.living.player.Player.class).orElse(null);
         this.message = SpongePlugin.get().serialize(event.getMessage());
         this.channel = channel; //TODO: get from MessageChannel (MessageChannel -> channel)
         this.setPublishCanceled(event.isMessageCancelled());
@@ -36,7 +36,11 @@ public class PlayerChatEventImpl extends PublishCancelableEvent implements Playe
 
     @Override
     public Player getPlayer() {
-        return event.getCause().first(org.spongepowered.api.entity.living.player.Player.class).map(PlayerImpl::new).orElse(null);
+        if (player == null) {
+            return null; // Sent by a non-player
+        }
+
+        return new PlayerImpl(player);
     }
 
 }

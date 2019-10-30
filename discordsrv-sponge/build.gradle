@@ -41,6 +41,8 @@ dependencies {
     compile 'net.kyori:text-adapter-spongeapi:3.0.3' // kyori text adapter
 
     provided 'io.github.nucleuspowered:nucleus-api:1.14.0-S7.1' // nucleus (sponge's essentials)
+    provided 'br.net.fabiozumbi12.UltimateChat:UltimateChat-Sponge-56:1.8.9' // ultimatechat (chat plugin)
+    provided 'flavor.pie:boop:1.6.2' // boop (chat plugin)
 }
 
 sponge.plugin.id = pluginId

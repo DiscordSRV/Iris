@@ -127,11 +127,10 @@ public class DiscordSRV {
     public void shutdown() {
         // try to shut down jda gracefully
         if (jda != null) {
-            CompletableFuture shutdownTask = new CompletableFuture();
+            CompletableFuture<Void> shutdownTask = new CompletableFuture<>();
             jda.addEventListener(new ListenerAdapter() {
                 @Override
                 public void onShutdown(@Nonnull ShutdownEvent event) {
-                    //noinspection unchecked
                     shutdownTask.complete(null);
                 }
             });

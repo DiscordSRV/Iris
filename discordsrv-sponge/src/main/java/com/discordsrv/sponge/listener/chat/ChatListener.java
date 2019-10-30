@@ -16,13 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.sponge.listener.message.chat;
+package com.discordsrv.sponge.listener.chat;
 
 import com.discordsrv.common.DiscordSRV;
+import com.discordsrv.common.logging.Log;
+import com.discordsrv.sponge.SpongePlugin;
 import com.discordsrv.sponge.event.MessageEventListener;
 import com.discordsrv.sponge.impl.event.PlayerChatEventImpl;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.message.MessageChannelEvent;
+import org.spongepowered.api.text.channel.MessageChannel;
+
+import java.util.Optional;
 
 public class ChatListener extends MessageEventListener {
 
@@ -42,7 +47,13 @@ public class ChatListener extends MessageEventListener {
     }
 
     private void handle(MessageChannelEvent.Chat event) {
-        DiscordSRV.get().getChannelManager().getChannel("global").ifPresent(channel ->
+        Optional<MessageChannel> messageChannel = event.getChannel();
+        if (!messageChannel.isPresent()) {
+            Log.debug("Received a chat message with no channel present (original channel: " + event.getOriginalChannel().getClass().getName() + ")");
+            return;
+        }
+
+        SpongePlugin.get().getChannelManager().getChannel(messageChannel.get()).ifPresent(channel ->
                 DiscordSRV.get().getEventBus().publish(new PlayerChatEventImpl(event, channel))
         );
     }

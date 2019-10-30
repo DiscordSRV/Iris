@@ -1,8 +1,8 @@
-package com.discordsrv.sponge.listener.message.award;
+package com.discordsrv.sponge.listener.award;
 
 import com.discordsrv.common.DiscordSRV;
-import com.discordsrv.common.dynamic.Localized;
 import com.discordsrv.common.logging.Log;
+import com.discordsrv.sponge.SpongePlugin;
 import com.discordsrv.sponge.event.MessageEventListener;
 import com.discordsrv.sponge.impl.PlayerImpl;
 import com.discordsrv.sponge.impl.event.PlayerAwardedAdvancementEventImpl;
@@ -32,12 +32,17 @@ public class PlayerAchievementListener extends MessageEventListener {
     }
 
     private void handle(GrantAchievementEvent.TargetPlayer event) {
-        if (!event.getChannel().isPresent()) {
+        Optional<MessageChannel> messageChannel = event.getChannel();
+        if (!messageChannel.isPresent()) {
             Log.debug("Received a achievement message with no channel present");
             return;
         }
+
         String achievement = event.getAchievement().getTranslation().get(Locale.ENGLISH);
-        DiscordSRV.get().getEventBus().publish(new PlayerAwardedAdvancementEventImpl(
-                achievement, new PlayerImpl(event.getTargetEntity()), event.isCancelled() || event.isMessageCancelled()));
+        SpongePlugin.get().getChannelManager().getChannel(messageChannel.get()).ifPresent(channel ->
+                DiscordSRV.get().getEventBus().publish(new PlayerAwardedAdvancementEventImpl(
+                        achievement, new PlayerImpl(event.getTargetEntity()), event.isCancelled() || event.isMessageCancelled(), channel))
+        );
+
     }
 }

@@ -4,10 +4,16 @@ import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.abstracted.channel.BaseChannel;
 import com.discordsrv.common.abstracted.channel.BaseChannelManager;
 import com.discordsrv.common.logging.Log;
+import lombok.Getter;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.text.channel.MessageChannel;
 
 import java.util.*;
 
 public class ChannelManagerImpl extends BaseChannelManager {
+
+    @Getter private Set<MessageChannelTranslator> channelTranslators = new HashSet<>();
+
     @Override
     public void load() {
         Map<String, Object> channelsFromConfig = DiscordSRV.get().getConfig().getMap("Channels");
@@ -24,15 +30,68 @@ public class ChannelManagerImpl extends BaseChannelManager {
                 channelsToLink.add(String.valueOf(entry.getValue()));
             }
 
+            if (channelsToLink.isEmpty()) {
+                Log.error("Channel " + entry.getKey() + " was assigned to 0 channels");
+                continue;
+            }
+
             Log.debug("Channel " + entry.getKey() + " <-> " + channelsToLink);
-            //TODO plugin channel implementations
-            VanillaChannel channel = new VanillaChannel(channelsToLink);
-            getChannels().add(channel);
+
+            // Nucleus
+            if (Sponge.getPluginManager().isLoaded("nucleus")) {
+                if (entry.getKey().equalsIgnoreCase("staff-chat")) {
+                    if (io.github.nucleuspowered.nucleus.api.NucleusAPI.getStaffChatService().isPresent()) {
+                        NucleusStaffChatChannel channel = new NucleusStaffChatChannel(channelsToLink);
+                        getChannels().add(channel);
+                        getChannelTranslators().add(channel);
+                        Log.debug("Hooked Nucleus Staff chat");
+                    } else {
+                        Log.debug("Nucleus staff chat was disabled through Nucleus; not enabling the staff chat channel");
+                    }
+                }
+
+                if (entry.getKey().equalsIgnoreCase("helpop")) {
+                    NucleusHelpOpChannel channel = new NucleusHelpOpChannel(channelsToLink);
+                    getChannels().add(channel);
+                    getChannelTranslators().add(channel);
+                    Log.debug("Hooked Nucleus HelpOp forwarding");
+                }
+            }
+
+            if (Sponge.getPluginManager().isLoaded("ultimatechat")) {
+                br.net.fabiozumbi12.UltimateChat.Sponge.UCChannel channel = br.net.fabiozumbi12.UltimateChat.Sponge.UChat.get().getAPI().getChannels()
+                        .stream()
+                        .filter(c -> c.getName().equalsIgnoreCase(entry.getKey()))
+                        .findAny().orElse(null);
+
+                if (channel != null) {
+                    UltimateChatChannel chatChannel = new UltimateChatChannel(channel, channelsToLink);
+                    getChannels().add(chatChannel);
+                    Log.debug("Hooked to Ultimate Chat channel: " + chatChannel.getName());
+                } else {
+                    Log.debug("No matching Ultimate Chat channel found for: " + entry.getKey());
+                }
+            }
+
+            // Vanilla
+            if (entry.getKey().equalsIgnoreCase("global")) {
+                Log.debug("Hooked Vanilla chat");
+                VanillaChannel channel = new VanillaChannel(channelsToLink);
+                getChannels().add(channel);
+                getChannelTranslators().add(channel);
+            }
         }
     }
 
     @Override
     public Optional<BaseChannel> getChannel(String target) {
         return super.getChannel(target);
+    }
+
+    public Optional<BaseChannel> getChannel(MessageChannel messageChannel) {
+        return channelTranslators.stream()
+                .map(translator -> translator.translate(messageChannel))
+                .filter(Optional::isPresent)
+                .findAny().orElse(Optional.empty());
     }
 }

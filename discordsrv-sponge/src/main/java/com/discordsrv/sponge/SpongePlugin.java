@@ -24,14 +24,12 @@ import com.discordsrv.sponge.event.MessageListener;
 import com.discordsrv.sponge.impl.PluginManagerImpl;
 import com.discordsrv.sponge.impl.ServerImpl;
 import com.discordsrv.sponge.impl.channel.ChannelManagerImpl;
-import com.discordsrv.sponge.listener.NucleusAfkListener;
-import com.discordsrv.sponge.listener.message.GenericMessageListener;
-import com.discordsrv.sponge.listener.message.chat.ChatListener;
-import com.discordsrv.sponge.listener.message.PlayerConnectionListener;
-import com.discordsrv.sponge.listener.message.PlayerDeathListener;
-import com.discordsrv.sponge.listener.message.award.PlayerAchievementListener;
-import com.discordsrv.sponge.listener.message.award.PlayerAdvancementListener;
-import com.discordsrv.sponge.listener.NucleusBroadcastListener;
+import com.discordsrv.sponge.listener.GenericMessageListener;
+import com.discordsrv.sponge.listener.chat.ChatListener;
+import com.discordsrv.sponge.listener.PlayerConnectionListener;
+import com.discordsrv.sponge.listener.PlayerDeathListener;
+import com.discordsrv.sponge.listener.award.PlayerAchievementListener;
+import com.discordsrv.sponge.listener.award.PlayerAdvancementListener;
 import com.google.inject.Inject;
 import github.scarsz.configuralize.ParseException;
 import lombok.Getter;
@@ -62,7 +60,9 @@ import java.io.IOException;
                 "Scarsz"
         },
         dependencies = {
-                @Dependency(id = "nucleus", optional = true)
+                @Dependency(id = "nucleus", optional = true),
+                @Dependency(id = "ultimatechat", optional = true),
+                @Dependency(id = "boop", optional = true, version = "(,1.6.1]")
         }
 )
 public class SpongePlugin implements com.discordsrv.common.logging.Logger {
@@ -146,11 +146,15 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
         }
     }
 
-    public Component serialize(Text text) {
+    public ChannelManagerImpl getChannelManager() {
+        return (ChannelManagerImpl) srv.getChannelManager();
+    }
+
+    public static Component serialize(Text text) {
         return GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(text)); // TODO switch to jackson serializer once available
     }
 
-    public Text serialize(Component component) {
+    public static Text serialize(Component component) {
         return TextSerializers.JSON.deserialize(GsonComponentSerializer.INSTANCE.serialize(component)); // TODO switch to jackson serializer once available
     }
 

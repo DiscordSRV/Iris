@@ -1,4 +1,4 @@
-package com.discordsrv.sponge.listener.message;
+package com.discordsrv.sponge.listener;
 
 import com.discordsrv.sponge.event.MessageEventListener;
 import org.spongepowered.api.event.message.MessageChannelEvent;

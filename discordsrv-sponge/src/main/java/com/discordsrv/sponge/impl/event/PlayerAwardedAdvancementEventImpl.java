@@ -1,27 +1,22 @@
 package com.discordsrv.sponge.impl.event;
 
 import com.discordsrv.common.abstracted.Player;
+import com.discordsrv.common.abstracted.channel.Channel;
 import com.discordsrv.common.api.event.game.PlayerAwardedEvent;
 import com.discordsrv.common.api.event.game.PublishCancelableEvent;
+import lombok.Getter;
 
 public class PlayerAwardedAdvancementEventImpl extends PublishCancelableEvent implements PlayerAwardedEvent {
 
-    private final String advancement;
-    private final Player player;
+    @Getter private final String award;
+    @Getter private final Player player;
+    private final Channel channel;
 
-    public PlayerAwardedAdvancementEventImpl(String advancement, Player player, boolean cancelled) {
-        this.advancement = advancement;
+    public PlayerAwardedAdvancementEventImpl(String award, Player player, boolean cancelled, Channel channel) {
+        this.award = award;
         this.player = player;
+        this.channel = channel;
         this.setWillPublish(!cancelled);
     }
 
-    @Override
-    public String getAward() {
-        return advancement;
-    }
-
-    @Override
-    public Player getPlayer() {
-        return player;
-    }
 }

@@ -2,27 +2,28 @@ package com.discordsrv.sponge.impl.channel;
 
 import com.discordsrv.common.abstracted.channel.BaseChannel;
 import com.discordsrv.sponge.SpongePlugin;
+import io.github.nucleuspowered.nucleus.api.NucleusAPI;
+import io.github.nucleuspowered.nucleus.api.chat.NucleusChatChannel;
 import net.kyori.text.Component;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.channel.MessageChannel;
 
 import java.util.Optional;
 import java.util.Set;
 
-public class VanillaChannel extends BaseChannel implements MessageChannelTranslator {
+public class NucleusStaffChatChannel extends BaseChannel implements MessageChannelTranslator {
 
-    public VanillaChannel(Set<String> targetChannelIds) {
-        super("global", targetChannelIds);
+    public NucleusStaffChatChannel(Set<String> targetChannelIds) {
+        super("staff", targetChannelIds);
     }
 
     @Override
     public void sendToMinecraft(Component message) {
-        Sponge.getServer().getBroadcastChannel().send(SpongePlugin.serialize(message));
+        NucleusAPI.getStaffChatService().ifPresent(service -> service.getStaffChat().send(SpongePlugin.serialize(message)));
     }
 
     @Override
     public Optional<BaseChannel> translate(MessageChannel messageChannel) {
-        if (messageChannel.getClass().getName().startsWith("org.spongepowered.api.text.channel.MessageChannel")) {
+        if (messageChannel instanceof NucleusChatChannel.StaffChat) {
             return Optional.of(this);
         }
         return Optional.empty();

@@ -56,6 +56,10 @@ public class Text {
         return plainSerializer.serialize(component);
     }
 
+    public static Locale languageAsLocale() {
+        return Locale.forLanguageTag(Text.getLanguage().getCode().toLowerCase());
+    }
+
     /**
      * Returns whether or not every {@link Text} message has definitions for every {@link Language}
      */

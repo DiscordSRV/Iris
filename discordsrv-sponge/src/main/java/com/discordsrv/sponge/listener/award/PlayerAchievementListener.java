@@ -1,6 +1,7 @@
 package com.discordsrv.sponge.listener.award;
 
 import com.discordsrv.common.DiscordSRV;
+import com.discordsrv.common.Text;
 import com.discordsrv.common.logging.Log;
 import com.discordsrv.sponge.SpongePlugin;
 import com.discordsrv.sponge.event.MessageEventListener;
@@ -11,7 +12,6 @@ import org.spongepowered.api.event.achievement.GrantAchievementEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.text.channel.MessageChannel;
 
-import java.util.Locale;
 import java.util.Optional;
 
 public class PlayerAchievementListener extends MessageEventListener {
@@ -38,7 +38,7 @@ public class PlayerAchievementListener extends MessageEventListener {
             return;
         }
 
-        String achievement = event.getAchievement().getTranslation().get(Locale.ENGLISH);
+        String achievement = event.getAchievement().getTranslation().get(Text.languageAsLocale());
         SpongePlugin.get().getChannelManager().getChannel(messageChannel.get()).ifPresent(channel ->
                 DiscordSRV.get().getEventBus().publish(new PlayerAwardedAdvancementEventImpl(
                         achievement, new PlayerImpl(event.getTargetEntity()), event.isCancelled() || event.isMessageCancelled(), channel))

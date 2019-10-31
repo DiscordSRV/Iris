@@ -12,7 +12,7 @@ public class BoopChannel extends BaseChannel {
 
     public BoopChannel(BaseChannel baseChannel, MessageChannel messageChannel) {
         super("boop_" + baseChannel.getName(), baseChannel.getTargetChannelIds());
-        this.channel = new BoopableChannel(messageChannel);
+        this.channel = messageChannel;
     }
 
     @Override

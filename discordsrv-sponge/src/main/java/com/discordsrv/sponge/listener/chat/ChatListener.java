@@ -54,7 +54,8 @@ public class ChatListener extends MessageEventListener {
         }
 
         SpongePlugin.get().getChannelManager().getChannel(messageChannel.get()).ifPresent(channel ->
-                DiscordSRV.get().getEventBus().publish(new PlayerChatEventImpl(event, channel))
+                DiscordSRV.get().getEventBus().publish(new PlayerChatEventImpl(
+                        event, event.getMessage(), event.isCancelled() || event.isMessageCancelled(), channel))
         );
     }
 }

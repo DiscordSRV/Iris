@@ -37,6 +37,12 @@ public class ChannelManagerImpl extends BaseChannelManager {
 
             Log.debug("Channel " + entry.getKey() + " <-> " + channelsToLink);
 
+            // Boop
+            boolean useBoop = Sponge.getPluginManager().isLoaded("boop");
+            if (useBoop) {
+                getChannelTranslators().add(new BoopChannelTranslator());
+            }
+
             // Nucleus
             if (Sponge.getPluginManager().isLoaded("nucleus")) {
                 if (entry.getKey().equalsIgnoreCase("staff-chat")) {
@@ -58,6 +64,7 @@ public class ChannelManagerImpl extends BaseChannelManager {
                 }
             }
 
+            // UltimateChat
             if (Sponge.getPluginManager().isLoaded("ultimatechat")) {
                 br.net.fabiozumbi12.UltimateChat.Sponge.UCChannel channel = br.net.fabiozumbi12.UltimateChat.Sponge.UChat.get().getAPI().getChannels()
                         .stream()
@@ -79,6 +86,9 @@ public class ChannelManagerImpl extends BaseChannelManager {
                 VanillaChannel channel = new VanillaChannel(channelsToLink);
                 getChannels().add(channel);
                 getChannelTranslators().add(channel);
+                if (useBoop) {
+                    getChannels().add(new BoopChannel(channel, MessageChannel.TO_ALL));
+                }
             }
         }
     }

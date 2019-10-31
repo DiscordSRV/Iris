@@ -17,7 +17,7 @@ public class VanillaChannel extends BaseChannel implements MessageChannelTransla
 
     @Override
     public void sendToMinecraft(Component message) {
-        Sponge.getServer().getBroadcastChannel().send(SpongePlugin.serialize(message));
+        MessageChannel.TO_ALL.send(SpongePlugin.serialize(message));
     }
 
     @Override

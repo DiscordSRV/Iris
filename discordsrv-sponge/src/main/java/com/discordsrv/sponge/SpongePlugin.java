@@ -20,11 +20,11 @@ package com.discordsrv.sponge;
 
 import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.logging.Log;
-import com.discordsrv.sponge.event.MessageListener;
+import com.discordsrv.sponge.listener.message.MessageListener;
 import com.discordsrv.sponge.impl.PluginManagerImpl;
 import com.discordsrv.sponge.impl.ServerImpl;
 import com.discordsrv.sponge.impl.channel.ChannelManagerImpl;
-import com.discordsrv.sponge.listener.GenericMessageListener;
+import com.discordsrv.sponge.listener.message.GenericMessageListener;
 import com.discordsrv.sponge.listener.chat.ChatListener;
 import com.discordsrv.sponge.listener.PlayerConnectionListener;
 import com.discordsrv.sponge.listener.PlayerDeathListener;

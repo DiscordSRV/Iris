@@ -1,10 +1,10 @@
 package com.discordsrv.sponge.listener;
 
 import com.discordsrv.common.DiscordSRV;
+import com.discordsrv.common.api.Subscribe;
 import com.discordsrv.common.logging.Log;
 import com.discordsrv.sponge.SpongePlugin;
-import com.discordsrv.sponge.event.MessageEventListener;
-import com.discordsrv.sponge.impl.event.PlayerChatEventImpl;
+import com.discordsrv.sponge.event.SpongeMessageEvent;
 import com.discordsrv.sponge.impl.event.PlayerConnectionEventImpl;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -12,25 +12,15 @@ import org.spongepowered.api.text.channel.MessageChannel;
 
 import java.util.Optional;
 
-public class PlayerConnectionListener extends MessageEventListener {
+public class PlayerConnectionListener {
 
-//    @Listener(order = Order.POST)
-//    public void onLogin(ClientConnectionEvent.Join event) {
-//        SpongePlugin.get().getAsyncExecutor().execute(() -> handle(event));
-//    }
-//
-//    @Listener(order = Order.POST)
-//    public void onDisconnect(ClientConnectionEvent.Disconnect event) {
-//        SpongePlugin.get().getAsyncExecutor().execute(() -> handle(event));
-//    }
-
-    @Override
-    public boolean onEvent(MessageChannelEvent event) {
-        if (event instanceof ClientConnectionEvent.Join || event instanceof ClientConnectionEvent.Disconnect) {
-            handle((ClientConnectionEvent) event);
-            return true;
+    @Subscribe
+    public void onMessage(SpongeMessageEvent event) {
+        MessageChannelEvent messageEvent = event.getEvent();
+        if (messageEvent instanceof ClientConnectionEvent.Join || messageEvent instanceof ClientConnectionEvent.Disconnect) {
+            handle((ClientConnectionEvent) messageEvent);
+            event.setHandled(true);
         }
-        return false;
     }
 
     private void handle(ClientConnectionEvent event) {

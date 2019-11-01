@@ -2,9 +2,10 @@ package com.discordsrv.sponge.listener.award;
 
 import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.Text;
+import com.discordsrv.common.api.Subscribe;
 import com.discordsrv.common.logging.Log;
 import com.discordsrv.sponge.SpongePlugin;
-import com.discordsrv.sponge.event.MessageEventListener;
+import com.discordsrv.sponge.event.SpongeMessageEvent;
 import com.discordsrv.sponge.impl.PlayerImpl;
 import com.discordsrv.sponge.impl.event.PlayerAwardedAdvancementEventImpl;
 import org.spongepowered.api.entity.living.player.Player;
@@ -14,21 +15,15 @@ import org.spongepowered.api.text.channel.MessageChannel;
 
 import java.util.Optional;
 
-public class PlayerAchievementListener extends MessageEventListener {
+public class PlayerAchievementListener {
 
-//    @Listener(order = Order.POST)
-//    @IsCancelled(Tristate.UNDEFINED)
-//    public void onAchievement(GrantAchievementEvent.TargetPlayer event, @Root Player player) {
-//        SpongePlugin.get().getAsyncExecutor().execute(() -> handle(event, player));
-//    }
-
-    @Override
-    public boolean onEvent(MessageChannelEvent event) {
-        if (event instanceof GrantAchievementEvent.TargetPlayer && event.getCause().root() instanceof Player) {
-            handle((GrantAchievementEvent.TargetPlayer) event);
-            return true;
+    @Subscribe
+    public void onMessage(SpongeMessageEvent event) {
+        MessageChannelEvent messageEvent = event.getEvent();
+        if (messageEvent instanceof GrantAchievementEvent.TargetPlayer && messageEvent.getCause().root() instanceof Player) {
+            handle((GrantAchievementEvent.TargetPlayer) messageEvent);
+            event.setHandled(true);
         }
-        return false;
     }
 
     private void handle(GrantAchievementEvent.TargetPlayer event) {

@@ -19,9 +19,10 @@
 package com.discordsrv.sponge.listener.chat;
 
 import com.discordsrv.common.DiscordSRV;
+import com.discordsrv.common.api.Subscribe;
 import com.discordsrv.common.logging.Log;
 import com.discordsrv.sponge.SpongePlugin;
-import com.discordsrv.sponge.event.MessageEventListener;
+import com.discordsrv.sponge.event.SpongeMessageEvent;
 import com.discordsrv.sponge.impl.event.PlayerChatEventImpl;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.message.MessageChannelEvent;
@@ -29,21 +30,15 @@ import org.spongepowered.api.text.channel.MessageChannel;
 
 import java.util.Optional;
 
-public class ChatListener extends MessageEventListener {
+public class ChatListener {
 
-//    @Listener(order = Order.POST)
-//    @IsCancelled(Tristate.UNDEFINED)
-//    public void onChatEvent(MessageChannelEvent.Chat event, @First Player player) {
-//        SpongePlugin.get().getAsyncExecutor().execute(() -> handle(event));
-//    }
-
-    @Override
-    public boolean onEvent(MessageChannelEvent event) {
-        if (event instanceof MessageChannelEvent.Chat && event.getCause().first(Player.class).isPresent()) {
-            handle((MessageChannelEvent.Chat) event);
-            return true;
+    @Subscribe
+    public void onMessage(SpongeMessageEvent event) {
+        MessageChannelEvent messageEvent = event.getEvent();
+        if (messageEvent instanceof MessageChannelEvent.Chat && messageEvent.getCause().first(Player.class).isPresent()) {
+            handle((MessageChannelEvent.Chat) messageEvent);
+            event.setHandled(true);
         }
-        return false;
     }
 
     private void handle(MessageChannelEvent.Chat event) {

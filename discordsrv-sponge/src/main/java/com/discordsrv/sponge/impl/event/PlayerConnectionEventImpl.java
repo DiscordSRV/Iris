@@ -18,7 +18,7 @@ public class PlayerConnectionEventImpl extends PublishCancelableEvent implements
     @Getter private final Player player;
     @Getter private final Component message;
     @Getter private final State state;
-    private final Channel channel;
+    private final Channel channel; // TODO: not used
 
     public PlayerConnectionEventImpl(ClientConnectionEvent event, Channel channel) {
         org.spongepowered.api.entity.living.player.Player player = ((TargetPlayerEvent) event).getTargetEntity();

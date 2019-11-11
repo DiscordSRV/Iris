@@ -15,7 +15,7 @@ public class PlayerDeathEventImpl extends PublishCancelableEvent implements Play
 
     @Getter private final Player player;
     @Getter private final Component message;
-    private final Channel channel;
+    private final Channel channel; // TODO: not used
 
     public PlayerDeathEventImpl(DestructEntityEvent.Death event, Channel channel) {
         Entity targetEntity = event.getTargetEntity();

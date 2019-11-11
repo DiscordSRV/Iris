@@ -10,7 +10,7 @@ public class PlayerAwardedAdvancementEventImpl extends PublishCancelableEvent im
 
     @Getter private final String award;
     @Getter private final Player player;
-    private final Channel channel;
+    private final Channel channel; // TODO: not used
 
     public PlayerAwardedAdvancementEventImpl(String award, Player player, boolean cancelled, Channel channel) {
         this.award = award;

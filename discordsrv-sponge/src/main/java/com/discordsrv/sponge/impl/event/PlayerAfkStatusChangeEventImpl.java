@@ -9,14 +9,14 @@ import net.kyori.text.Component;
 
 import javax.annotation.Nullable;
 
-public class PlayerAfkStatusChangeImpl extends PublishCancelableEvent implements PlayerAfkStatusChangeEvent {
+public class PlayerAfkStatusChangeEventImpl extends PublishCancelableEvent implements PlayerAfkStatusChangeEvent {
 
     @Getter private final boolean goingAfk;
     @Getter private final Player player;
     @Getter private final Component message;
     @Getter private final Channel channel;
 
-    public PlayerAfkStatusChangeImpl(boolean goingAfk, Player player, @Nullable Component message, Channel channel, boolean cancelled) {
+    public PlayerAfkStatusChangeEventImpl(boolean goingAfk, Player player, @Nullable Component message, Channel channel, boolean cancelled) {
         this.goingAfk = goingAfk;
         this.player = player;
         this.message = message;

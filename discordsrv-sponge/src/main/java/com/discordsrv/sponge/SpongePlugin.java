@@ -20,16 +20,16 @@ package com.discordsrv.sponge;
 
 import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.logging.Log;
-import com.discordsrv.sponge.listener.message.MessageListener;
 import com.discordsrv.sponge.impl.PluginManagerImpl;
 import com.discordsrv.sponge.impl.ServerImpl;
 import com.discordsrv.sponge.impl.channel.ChannelManagerImpl;
-import com.discordsrv.sponge.listener.message.GenericMessageListener;
-import com.discordsrv.sponge.listener.chat.ChatListener;
 import com.discordsrv.sponge.listener.PlayerConnectionListener;
 import com.discordsrv.sponge.listener.PlayerDeathListener;
 import com.discordsrv.sponge.listener.award.PlayerAchievementListener;
 import com.discordsrv.sponge.listener.award.PlayerAdvancementListener;
+import com.discordsrv.sponge.listener.chat.ChatListener;
+import com.discordsrv.sponge.listener.message.GenericMessageListener;
+import com.discordsrv.sponge.listener.message.MessageListener;
 import com.google.inject.Inject;
 import github.scarsz.configuralize.ParseException;
 import lombok.Getter;
@@ -100,14 +100,14 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
 
         try {
             Class.forName("org.spongepowered.api.event.advancement.AdvancementEvent");
-            MessageListener.LISTENERS.add(new PlayerAdvancementListener());
+            srv.getEventBus().subscribe(new PlayerAdvancementListener());
         } catch (ClassNotFoundException ignored) {
-            MessageListener.LISTENERS.add(new PlayerAchievementListener());
+            srv.getEventBus().subscribe(new PlayerAchievementListener());
         }
-        MessageListener.LISTENERS.add(new ChatListener());
-        MessageListener.LISTENERS.add(new PlayerConnectionListener());
-        MessageListener.LISTENERS.add(new PlayerDeathListener());
-        MessageListener.LISTENERS.add(new GenericMessageListener());
+        srv.getEventBus().subscribe(new ChatListener());
+        srv.getEventBus().subscribe(new PlayerConnectionListener());
+        srv.getEventBus().subscribe(new PlayerDeathListener());
+        srv.getEventBus().subscribe(new GenericMessageListener());
 
         Sponge.getEventManager().registerListeners(this, new MessageListener());
 

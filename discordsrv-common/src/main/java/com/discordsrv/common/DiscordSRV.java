@@ -107,7 +107,7 @@ public class DiscordSRV {
                 .setHttpClient(httpClient)
                 .setToken(System.getenv("DISCORDSRV_TOKEN") != null
                         ? System.getenv("DISCORDSRV_TOKEN")
-                        : config.getString("Token"))
+                        : config.getString("Discord.Token"))
                 .addEventListeners(new ListenerAdapter() {
                     @Override
                     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {

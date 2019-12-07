@@ -56,12 +56,12 @@ public class DiscordSRV {
 
     @Getter private final DynamicConfig config;
     @Getter private final ChannelManager channelManager;
+    @Getter private final EventBus eventBus;
     @Getter private final OkHttpClient httpClient;
     @Getter private final JDA jda;
 
     // platform supplied objects
     @Getter private final File dataFolder;
-    @Getter private final EventBus eventBus;
     @Getter private final PluginManager pluginManager;
     @Getter private final Server server;
 

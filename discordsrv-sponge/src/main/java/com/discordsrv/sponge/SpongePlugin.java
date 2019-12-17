@@ -70,6 +70,7 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
     @Inject @Getter @ConfigDir(sharedRoot = false) private File dataFolder;
     @Inject @Getter private Logger logger;
     @Getter private DiscordSRV srv;
+    @Getter private SpongeExecutorService syncExecutor;
     @Getter private SpongeExecutorService asyncExecutor;
 
     @Listener
@@ -96,6 +97,7 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
             return;
         }
 
+        syncExecutor = Sponge.getScheduler().createSyncExecutor(this);
         asyncExecutor = Sponge.getScheduler().createAsyncExecutor(this);
 
         try {

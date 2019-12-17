@@ -18,18 +18,66 @@
 
 package com.discordsrv.common.abstracted;
 
+/**
+ * Scheduler interface for DiscordSRV.
+ *
+ * This file reference ticks, there are 20 ticks per second
+ */
 public interface Scheduler {
 
+    /**
+     * Runs the provided {@link Runnable} on the main server thread.
+     * <br><b>Keep in mind running a task sync (on the main thread) is usually not necessary with DiscordSRV
+     *
+     * @param runnable the task to execute
+     */
     default void runTask(Runnable runnable) {
         runTaskLater(runnable, 0);
     }
-    void runTaskLater(Runnable runnable, int delay);
-    void runTaskRepeating(Runnable runnable, int delay, int period);
 
+    /**
+     * Runs the provided {@link Runnable} after the specified amount of ticks on the main thread.
+     * <br><b>Keep in mind running a task sync (on the main thread) is usually not necessary with DiscordSRV
+     *
+     * @param runnable the task to execute
+     * @param delay ticks before executing the task
+     */
+    void runTaskLater(Runnable runnable, long delay);
+
+    /**
+     * Runs the specified {@link Runnable} every <i>period</i> ticks on the main thread. The first execution will be after <i>delay</i> ticks.
+     * <br><b>Keep in mind running a task sync (on the main thread) is usually not necessary with DiscordSRV
+     *
+     * @param runnable the task to execute
+     * @param delay ticks before executing the first task
+     * @param period ticks in between running tasks
+     */
+    void runTaskRepeating(Runnable runnable, long delay, long period);
+
+    /**
+     * Runs the provided {@link Runnable} off of the main thread.
+     *
+     * @param runnable the task to execute
+     */
     default void runTaskAsync(Runnable runnable) {
         runTaskAsyncLater(runnable, 0);
     }
-    void runTaskAsyncLater(Runnable runnable, int delay);
-    void runTaskAsyncRepeating(Runnable runnable, int delay, int period);
+
+    /**
+     * Runs the provided {@link Runnable} after the specified amount of ticks off of the main thread.
+     *
+     * @param runnable the task to execute
+     * @param delay ticks before executing the task
+     */
+    void runTaskAsyncLater(Runnable runnable, long delay);
+
+    /**
+     * Runs the specified {@link Runnable} every <i>period</i> ticks off of the main thread. The first execution will be after <i>delay</i> ticks.
+     *
+     * @param runnable the task to execute
+     * @param delay ticks before executing the first task
+     * @param period ticks in between running tasks
+     */
+    void runTaskAsyncRepeating(Runnable runnable, long delay, long period);
 
 }

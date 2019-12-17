@@ -23,10 +23,9 @@ import com.discordsrv.common.api.event.discord.GuildMessageProcessingEvent;
 
 public class DiscordCannedResponseListener {
 
-    @Subscribe
+    @Subscribe(ignoring = true)
     public void onGuildProcessingReceived(GuildMessageProcessingEvent event) {
-        // event was already handled by something else, such as canned responses
-        if (event.isHandled()) return;
+        if (event.getAuthor().equals(event.getJDA().getSelfUser())) return;
 
         //TODO #getMember == null when the message is from a webhook. maybe investigate accepting webhook messages
         if (event.getMember() == null || event.getAuthor().equals(event.getJDA().getSelfUser())) return;

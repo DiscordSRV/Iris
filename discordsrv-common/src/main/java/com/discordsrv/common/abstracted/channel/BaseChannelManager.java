@@ -22,6 +22,7 @@ import com.discordsrv.common.Text;
 import com.discordsrv.common.api.ListenerPriority;
 import com.discordsrv.common.api.Subscribe;
 import com.discordsrv.common.api.event.discord.GuildMessageProcessingEvent;
+import com.discordsrv.common.logging.Log;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Message;
 import net.kyori.text.TextComponent;
@@ -40,17 +41,21 @@ public abstract class BaseChannelManager implements ChannelManager {
 
     @Getter private Set<BaseChannel> channels = new HashSet<>();
 
-    @Subscribe(priority = ListenerPriority.MONITOR)
+    @Subscribe(priority = ListenerPriority.MONITOR, ignoring = true)
     public void onGuildMessageProcessingEventEvent(GuildMessageProcessingEvent event) {
-        // return if event was already handled by something else, such as canned responses
-        // otherwise, set the event to be handled as the channel manager is the final stop
-        if (event.isHandled()) return; else event.setHandled(true);
+        Log.debug("Processing message from " + event.getAuthor() + " > " + event.getMessage().getContentRaw());
+
+        // set the event to be handled as the channel manager is the final stop
+        event.setHandled(true);
 
         //TODO #getMember == null when the message is from a webhook. maybe investigate accepting webhook messages
         if (event.getMember() == null || event.getAuthor().equals(event.getJDA().getSelfUser())) return;
 
         BaseChannel destinationChannel = getChannel(event.getChannel().getId()).orElse(null);
-        if (destinationChannel == null) return;
+        if (destinationChannel == null) {
+            Log.debug("No destination channel found for message, skipping");
+            return;
+        }
 
         //TODO reserialization
 

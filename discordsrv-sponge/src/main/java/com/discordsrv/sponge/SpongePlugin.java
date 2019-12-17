@@ -90,7 +90,7 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
         } catch (ParseException e) {
             e.printStackTrace();
             return;
-        } catch (LoginException | InterruptedException e) {
+        } catch (LoginException e) {
             logger.error("Failed to login to Discord");
             e.printStackTrace();
             return;

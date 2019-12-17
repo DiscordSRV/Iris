@@ -1,2 +1,15 @@
+Channels:
+  - Discord: [417383230304550921]
+    Game: global
+
 Discord:
   Token: PASTE_YOU_BOT_TOKEN_HERE
+
+Webserver:
+  REST API:
+    Enabled: false
+    Port: 8500
+    Authentication:
+      Allow unauthenticated: false
+      Keys:
+        - SuperSecretPasswordThatYouBetterChangeIfYouEnableThis

@@ -43,7 +43,7 @@ public final class BungeePlugin extends Plugin implements Logger {
                     .pluginManager(new PluginManagerImpl())
                     .server(new ServerImpl())
                     .build();
-        } catch (LoginException | InterruptedException e) {
+        } catch (LoginException e) {
             getLogger().severe("Failed to login to Discord");
             e.printStackTrace();
             return;

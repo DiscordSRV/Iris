@@ -92,4 +92,12 @@ public abstract class BaseChannel implements Channel {
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "{" +
+                name +
+                ", targets=" + targetChannelIds +
+                '}';
+    }
+
 }

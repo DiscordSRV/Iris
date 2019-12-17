@@ -58,6 +58,6 @@ public enum ListenerPriority {
      * Event is listened to purely for monitoring the outcome of an event.
      * No modifications to the event should be made under this priority.
      */
-    MONITOR;
+    MONITOR
 
 }

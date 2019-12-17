@@ -18,6 +18,10 @@
 
 package com.discordsrv.common.api;
 
+import com.discordsrv.common.api.event.discord.GuildMessageProcessingEvent;
+import com.discordsrv.common.api.event.discord.HandledEvent;
+import com.discordsrv.common.api.event.game.PublishCancelable;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -37,5 +41,25 @@ public @interface Subscribe {
      * @return the priority of the event listener method
      */
     ListenerPriority priority() default ListenerPriority.NORMAL;
+
+    /**
+     * <p>Whether or not this listener should be ran if the event was already handled by something else or not</p>
+     * <p>In the case of a {@link HandledEvent}, events that have been handled will be ignored by this listener.</p>
+     * <p>In the case of a {@link PublishCancelable}, events that shouldn't be published will be ignored by this listener.</p>
+     * @return whether or not this listener will accept already handled events
+     */
+    boolean ignoring() default false;
+
+    /**
+     * <p>Whether or not this listener will accept Discord events from itself.</p>
+     * <p>Only applicable for listeners accepting events from Discord, such as {@link GuildMessageProcessingEvent}.</p>
+     */
+    boolean ignoreSelf() default true;
+
+    /**
+     * <p>Whether or not this listener will accept Discord events from webhooks.</p>
+     * <p>Only applicable for listeners accepting events from Discord, such as {@link GuildMessageProcessingEvent}.</p>
+     */
+    boolean ignoreWebhooks() default true;
 
 }

@@ -19,6 +19,7 @@
 package com.discordsrv.bukkit;
 
 import com.discordsrv.bukkit.impl.PluginManagerImpl;
+import com.discordsrv.bukkit.impl.SchedulerImpl;
 import com.discordsrv.bukkit.impl.ServerImpl;
 import com.discordsrv.bukkit.impl.channel.ChannelManagerImpl;
 import com.discordsrv.bukkit.listener.PlayerConnectionListener;
@@ -30,7 +31,6 @@ import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.logging.Log;
 import com.discordsrv.common.logging.Logger;
 import org.bukkit.Bukkit;
-import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.security.auth.login.LoginException;
@@ -50,13 +50,14 @@ public final class BukkitPlugin extends JavaPlugin implements Logger {
                     .channelManager(new ChannelManagerImpl())
                     .pluginManager(new PluginManagerImpl())
                     .server(new ServerImpl())
+                    .scheduler(new SchedulerImpl())
                     .build();
         } catch (IOException e) {
             Log.error("I/O exception while saving configuration files");
             e.printStackTrace();
             srv = null;
             return;
-        } catch (LoginException | InterruptedException e) {
+        } catch (LoginException e) {
             Log.error("Failed to login to Discord");
             e.printStackTrace();
             srv = null;
@@ -68,13 +69,13 @@ public final class BukkitPlugin extends JavaPlugin implements Logger {
             return;
         }
 
-        //noinspection deprecation
-        Bukkit.getPluginManager().registerEvents(
-                PlayerAchievementAwardedEvent.class.isAnnotationPresent(Deprecated.class)
-                        ? new PlayerAdvancementListener()
-                        : new PlayerAchievementListener(),
-                this
-        );
+        try {
+            Class<?> c = Class.forName("org.bukkit.event.player.PlayerAchievementAwardedEvent");
+            if (c.isAnnotationPresent(Deprecated.class)) throw new ClassNotFoundException();
+            Bukkit.getPluginManager().registerEvents(new PlayerAchievementListener(), this);
+        } catch (Exception ignored) {
+            Bukkit.getPluginManager().registerEvents(new PlayerAdvancementListener(), this);
+        }
         Bukkit.getPluginManager().registerEvents(new VanillaChatListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);

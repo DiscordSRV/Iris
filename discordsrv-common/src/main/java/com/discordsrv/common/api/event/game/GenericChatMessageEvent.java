@@ -8,4 +8,5 @@ public interface GenericChatMessageEvent extends PublishCancelable, Event {
 
     Channel getChannel();
     Component getMessage();
+
 }

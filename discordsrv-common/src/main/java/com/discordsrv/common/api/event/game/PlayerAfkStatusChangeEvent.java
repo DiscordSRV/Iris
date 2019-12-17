@@ -10,4 +10,5 @@ public interface PlayerAfkStatusChangeEvent extends PublishCancelable, PlayerEve
     Channel getChannel();
     boolean isGoingAfk();
     @Nullable Component getMessage();
+
 }

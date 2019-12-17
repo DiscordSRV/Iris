@@ -21,12 +21,10 @@ package com.discordsrv.common.logging;
 public class Log {
 
     public enum LogLevel {
-
         INFO,
         WARN,
         ERROR,
         DEBUG
-
     }
 
     static {
@@ -35,13 +33,11 @@ public class Log {
             switch (level) {
                 case INFO:
                 case WARN:
+                case DEBUG:
                     System.out.println("[DiscordSRV] [" + level.name() + "]" + message);
                     break;
                 case ERROR:
                     System.err.println("[DiscordSRV] [ERROR]" + message);
-                    break;
-                case DEBUG:
-                    System.out.println("[DiscordSRV] [DEBUG] " + message);
                     break;
             }
         });

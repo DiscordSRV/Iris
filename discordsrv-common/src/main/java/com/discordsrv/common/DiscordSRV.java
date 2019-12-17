@@ -19,12 +19,15 @@
 package com.discordsrv.common;
 
 import com.discordsrv.common.abstracted.PluginManager;
+import com.discordsrv.common.abstracted.Scheduler;
 import com.discordsrv.common.abstracted.Server;
 import com.discordsrv.common.abstracted.channel.ChannelManager;
 import com.discordsrv.common.api.EventBus;
 import com.discordsrv.common.api.event.discord.GuildMessageProcessingEvent;
-import com.discordsrv.common.listener.PlayerChatListener;
 import com.discordsrv.common.listener.discord.DiscordCannedResponseListener;
+import com.discordsrv.common.listener.game.PlayerChatListener;
+import com.discordsrv.common.listener.game.PlayerConnectionListener;
+import com.discordsrv.common.listener.game.PlayerDeathListener;
 import com.discordsrv.common.logging.Log;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
@@ -35,6 +38,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -44,6 +48,7 @@ import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -54,7 +59,7 @@ public class DiscordSRV {
 
     private static DiscordSRV INSTANCE;
 
-    @Getter private final DynamicConfig config;
+    private final DynamicConfig config;
     @Getter private final ChannelManager channelManager;
     @Getter private final EventBus eventBus;
     @Getter private final OkHttpClient httpClient;
@@ -64,10 +69,11 @@ public class DiscordSRV {
     @Getter private final File dataFolder;
     @Getter private final PluginManager pluginManager;
     @Getter private final Server server;
+    @Getter private final Scheduler scheduler;
 
     @Builder(builderClassName = "DSRVBuilder")
     DiscordSRV(@NonNull File dataFolder, @NonNull ChannelManager channelManager, @NonNull PluginManager pluginManager,
-               @NonNull Server server) throws LoginException, IOException, ParseException, InterruptedException {
+               @NonNull Server server, @NonNull Scheduler scheduler) throws LoginException, IOException, ParseException {
         if (INSTANCE != null) {
             throw new IllegalStateException("DiscordSRV is a singleton class. It should not be instantiated. Check usage.");
         } else {
@@ -77,10 +83,9 @@ public class DiscordSRV {
         this.dataFolder = dataFolder;
         //noinspection ResultOfMethodCallIgnored
         this.dataFolder.mkdir();
-        this.config = new DynamicConfig(
-                new Source(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml")),
-                new Source(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml"))
-        );
+        this.config = new DynamicConfig();
+        this.config.addSource(new Source(this.config, DiscordSRV.class, "config", new File(getDataFolder(), "config.yml")));
+        this.config.addSource(new Source(this.config, DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml")));
         this.config.saveAllDefaults();
         this.config.loadAll();
         this.config.getOptionalString("Debug.Forced language")
@@ -93,14 +98,16 @@ public class DiscordSRV {
         this.channelManager = channelManager;
         this.channelManager.load();
         this.eventBus = new EventBus();
+        this.eventBus.subscribe(channelManager);
         this.pluginManager = pluginManager;
         this.server = server;
+        this.scheduler = scheduler;
 
         this.httpClient = new OkHttpClient.Builder()
                 // more lenient timeouts for slow networks (these 3 are 10 seconds by default)
-                .connectTimeout(45, TimeUnit.SECONDS)
-                .readTimeout(45, TimeUnit.SECONDS)
-                .writeTimeout(45, TimeUnit.SECONDS)
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
                 .build();
 
         this.jda = new JDABuilder()
@@ -110,18 +117,38 @@ public class DiscordSRV {
                         : config.getString("Discord.Token"))
                 .addEventListeners(new ListenerAdapter() {
                     @Override
+                    public void onReady(@Nonnull ReadyEvent event) {
+                        registerListeners();
+                    }
+                    @Override
                     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
                         eventBus.publish(new GuildMessageProcessingEvent(event));
                     }
                 })
-                .build().awaitReady();
-
-        registerListeners();
+                .build();
     }
 
     private void registerListeners() {
-        if (eventBus.getListener(DiscordCannedResponseListener.class) == null) eventBus.subscribe(new DiscordCannedResponseListener());
-        if (eventBus.getListener(PlayerChatListener.class) == null) eventBus.subscribe(new PlayerChatListener());
+        Class<?>[] listeners = new Class[] {
+                // discord events
+                DiscordCannedResponseListener.class,
+
+                // game events
+                PlayerConnectionListener.class,
+                PlayerChatListener.class,
+                PlayerDeathListener.class
+        };
+
+        for (Class<?> listenerClass : listeners) {
+            if (eventBus.getListener(listenerClass) == null) {
+                try {
+                    eventBus.subscribe(listenerClass.getDeclaredConstructor().newInstance());
+                } catch (InstantiationException | IllegalAccessException |
+                        InvocationTargetException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public void shutdown() {
@@ -147,6 +174,10 @@ public class DiscordSRV {
 
     public static DiscordSRV get() {
         return INSTANCE;
+    }
+
+    public static DynamicConfig getConfig() {
+        return get().config;
     }
 
 }

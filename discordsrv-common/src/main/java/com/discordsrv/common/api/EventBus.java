@@ -19,12 +19,14 @@
 package com.discordsrv.common.api;
 
 import com.discordsrv.common.api.event.Event;
+import com.discordsrv.common.api.event.discord.GuildMessageProcessingEvent;
+import com.discordsrv.common.api.event.discord.HandledEvent;
+import com.discordsrv.common.api.event.game.PublishCancelable;
 import com.discordsrv.common.logging.Log;
 import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -59,7 +61,7 @@ public class EventBus {
         return listeners.remove(listener);
     }
 
-    public Object getListener(Class listenerClass) {
+    public Object getListener(Class<?> listenerClass) {
         Set<Object> found = getListeners(o -> o.getClass() == listenerClass);
         return found.size() != 0 ? found.iterator().next() : null;
     }
@@ -74,90 +76,109 @@ public class EventBus {
      * @return the event that was called
      */
     public <E extends Event> E publish(E event) {
-        Class<?> eventType = Arrays.stream(event.getClass().getInterfaces())
-                .filter(Event.class::isAssignableFrom)
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("Can't publish event class " + event.getClass() + ", doesn't implement Event"));
-
         for (ListenerPriority priority : ListenerPriority.values()) {
             for (Object listener : listeners) {
                 for (Method method : listener.getClass().getMethods()) {
                     if (method.getParameters().length == 0) continue; // api listener methods always take at least one parameter
                     if (!method.getParameters()[0].getType().isAssignableFrom(event.getClass())) continue; // make sure the event wants this event
                     if (!method.isAnnotationPresent(Subscribe.class)) continue; // make sure method has a subscribe annotation
+                    Subscribe annotation = method.getAnnotation(Subscribe.class);
+                    if (annotation.priority() != priority) continue; // this priority isn't being called right now
+                    if (annotation.ignoring()) {
+                        if (HandledEvent.class.isAssignableFrom(event.getClass())) {
+                            HandledEvent handledEvent = (HandledEvent) event;
+                            if (handledEvent.isHandled()) {
+                                continue; // this listener is ignoring already handled events
+                            }
+                        } else if (PublishCancelable.class.isAssignableFrom(event.getClass())) {
+                            PublishCancelable publishCancelable = (PublishCancelable) event;
+                            if (!publishCancelable.willPublish()) {
+                                continue; // this listener is ignoring events that shouldn't be published
+                            }
+                        }
+                    }
+                    if (event instanceof GuildMessageProcessingEvent) {
+                        GuildMessageProcessingEvent guildEvent = (GuildMessageProcessingEvent) event;
+                        if (annotation.ignoreSelf() && guildEvent.getAuthor().equals(guildEvent.getJDA().getSelfUser())) {
+                            continue; // this listener doesn't want sef events
+                        }
+                        if (annotation.ignoreWebhooks() && guildEvent.isWebhookMessage()) {
+                            continue; // this listener doesn't want webhook messages
+                        }
+                    }
 
-                    for (Annotation annotation : method.getAnnotations()) {
-                        if (!(annotation instanceof Subscribe)) continue; // go through all the annotations until we get one of ours
+                    String methodSignature = String.format("%s#%s(%s)",
+                            method.getDeclaringClass().getName(),
+                            method.getName(),
+                            Arrays.stream(method.getParameterTypes())
+                                    .map(Class::getSimpleName)
+                                    .collect(Collectors.joining(", "))
+                    );
+                    Log.debug("Publishing " + event.getClass().getSimpleName() + " to " + methodSignature);
 
-                        Subscribe subscribeAnnotation = (Subscribe) annotation;
-                        if (subscribeAnnotation.priority() != priority) continue; // this priority isn't being called right now
+                    // make sure method is accessible
+                    method.setAccessible(true);
 
-                        String methodSignature = String.format("%s#%s(%s)",
-                                method.getDeclaringClass().getName(),
-                                method.getName(),
-                                Arrays.stream(method.getParameterTypes())
-                                        .map(Class::getSimpleName)
-                                        .collect(Collectors.joining(", "))
-                        );
-                        Log.debug("Publishing " + eventType.getSimpleName() + " to " + methodSignature);
+                    List<Object> arguments = new LinkedList<>();
+                    arguments.add(event);
 
-                        // make sure method is accessible
-                        if (!method.isAccessible()) method.setAccessible(true);
+                    outer:
+                    for (Parameter parameter : ArrayUtils.subarray(method.getParameters(), 1, method.getParameterCount() + 1)) {
+                        String target = parameter.isAnnotationPresent(Get.class)
+                                ? parameter.getAnnotation(Get.class).name()
+                                : parameter.isNamePresent()
+                                ? parameter.getName()
+                                : parameter.getType().getSimpleName();
 
-                        List<Object> arguments = new LinkedList<>();
-                        arguments.add(event);
-
-                        outer:
-                        for (Parameter parameter : ArrayUtils.subarray(method.getParameters(), 1, method.getParameterCount() + 1)) {
-                            //TODO: be able to specify with a parameter annotation which value to be grabbed
-                            String target = parameter.isNamePresent()
-                                    ? parameter.getName()
-                                    : parameter.getType().getSimpleName();
-
-                            Log.debug("Finding " + target + " to fulfil listener parameter " + arguments.size());
-                            for (Method m : event.getClass().getMethods()) {
-                                if (m.getName().equalsIgnoreCase("is" + target) ||
-                                        m.getName().equalsIgnoreCase("get" + target)) {
-                                    Log.debug("Using " + m);
-                                    m.setAccessible(true);
-                                    try {
-                                        arguments.add(method.invoke(event));
-                                        continue outer;
-                                    } catch (IllegalAccessException | InvocationTargetException e) {
-                                        Log.debug(
-                                                String.format("Failed to get parameter value for %s#%s: %s",
-                                                        listener.getClass().getName(),
-                                                        method.getName(),
-                                                        e.getMessage()
-                                                )
-                                        );
-                                    }
+                        Log.debug("Finding " + target + " to fulfil listener parameter " + arguments.size());
+                        for (Method m : event.getClass().getMethods()) {
+                            if (m.getName().equalsIgnoreCase("is" + target) ||
+                                    m.getName().equalsIgnoreCase("get" + target) ||
+                                    m.getName().equalsIgnoreCase(target)) {
+                                Log.debug("Using " + m);
+                                m.setAccessible(true);
+                                try {
+                                    arguments.add(m.invoke(event));
+                                    continue outer;
+                                } catch (IllegalAccessException | InvocationTargetException e) {
+                                    Log.debug(
+                                            String.format("Failed to get parameter value for %s#%s: %s",
+                                                    listener.getClass().getName(),
+                                                    m.getName(),
+                                                    e.getMessage()
+                                            )
+                                    );
                                 }
                             }
-
-                            Log.debug("Failed to find matching method, parameter will be null!");
-                            arguments.add(null);
                         }
 
-                        try {
-                            method.invoke(listener, arguments.toArray());
-                        } catch (InvocationTargetException e) {
-                            Log.error(
-                                    String.format("Listener %s#%s threw an exception while processing " + event.getClass().getSimpleName() + ":\n%s",
-                                            listener.getClass().getName(),
-                                            method.toString(),
-                                            ExceptionUtils.getStackTrace(e)
-                                    )
-                            );
-                        } catch (IllegalAccessException e) {
-                            // this should never happen
-                            Log.error(
-                                    String.format("Listener %s#%s wasn't accessible:\n%s",
-                                            listener.getClass().getName(),
-                                            method.toString(),
-                                            ExceptionUtils.getStackTrace(e)
-                                    )
-                            );
-                        }
+                        Log.debug("Failed to find matching method, parameter will be null!");
+                        arguments.add(null);
+                    }
+
+                    if (arguments.size() > 1) {
+                        Log.debug("Done collecting parameters for event, invoking");
+                    }
+
+                    try {
+                        method.invoke(listener, arguments.toArray());
+                    } catch (InvocationTargetException e) {
+                        Log.error(
+                                String.format("Listener %s#%s threw an exception while processing " + event.getClass().getSimpleName() + ":\n%s",
+                                        listener.getClass().getName(),
+                                        method.toString(),
+                                        ExceptionUtils.getStackTrace(e)
+                                )
+                        );
+                    } catch (IllegalAccessException e) {
+                        // this should never happen
+                        Log.error(
+                                String.format("Listener %s#%s wasn't accessible:\n%s",
+                                        listener.getClass().getName(),
+                                        method.toString(),
+                                        ExceptionUtils.getStackTrace(e)
+                                )
+                        );
                     }
                 }
             }

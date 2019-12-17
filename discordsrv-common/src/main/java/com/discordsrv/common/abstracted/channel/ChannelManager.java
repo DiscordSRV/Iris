@@ -19,6 +19,7 @@
 package com.discordsrv.common.abstracted.channel;
 
 import lombok.Synchronized;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -29,6 +30,9 @@ public interface ChannelManager {
     Set<BaseChannel> channels = new HashSet<>();
     Set<BaseChannel> getChannels();
     Optional<BaseChannel> getChannel(String target);
+    default Optional<BaseChannel> getChannel(TextChannel target) {
+        return getChannel(target.getId());
+    }
 
     @Synchronized(value = "channels") void load();
 

@@ -27,7 +27,11 @@ import java.util.Set;
 public class VanillaChannel extends BaseChannel {
 
     public VanillaChannel(Set<String> targetChannelIds) {
-        super("global", targetChannelIds);
+        this("global", targetChannelIds);
+    }
+
+    public VanillaChannel(String name, Set<String> targetChannelIds) {
+        super(name, targetChannelIds);
     }
 
     @Override

@@ -86,7 +86,6 @@ public class PlayerImpl implements Player {
         }
 
         this.player = player;
-        PLAYER_CACHE.put(getUuid(), this);
     }
 
     @Override

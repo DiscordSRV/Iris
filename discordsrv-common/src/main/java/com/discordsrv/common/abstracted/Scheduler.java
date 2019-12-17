@@ -16,22 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.listener;
+package com.discordsrv.common.abstracted;
 
-import com.discordsrv.common.Text;
-import com.discordsrv.common.api.ListenerPriority;
-import com.discordsrv.common.api.Subscribe;
-import com.discordsrv.common.api.event.game.PlayerChatEvent;
-import com.discordsrv.common.logging.Log;
+public interface Scheduler {
 
-public class PlayerChatListener {
-
-    @Subscribe(priority = ListenerPriority.MONITOR)
-    public void onChat(PlayerChatEvent event) {
-        Log.debug("Received " + (!event.willPublish() ? "NON-PUBLISHING " : "") + "chat event: " + event.getPlayer().getName() + " -> " + event.getChannel() + " > " + Text.asPlain(event.getMessage()));
-        if (event.willPublish()) return;
-
-
+    default void runTask(Runnable runnable) {
+        runTaskLater(runnable, 0);
     }
+    void runTaskLater(Runnable runnable, int delay);
+    void runTaskRepeating(Runnable runnable, int delay, int period);
+
+    default void runTaskAsync(Runnable runnable) {
+        runTaskAsyncLater(runnable, 0);
+    }
+    void runTaskAsyncLater(Runnable runnable, int delay);
+    void runTaskAsyncRepeating(Runnable runnable, int delay, int period);
 
 }

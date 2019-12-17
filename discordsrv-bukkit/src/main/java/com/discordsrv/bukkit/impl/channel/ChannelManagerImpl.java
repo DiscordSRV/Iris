@@ -18,37 +18,54 @@
 
 package com.discordsrv.bukkit.impl.channel;
 
+import alexh.weak.Dynamic;
 import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.abstracted.channel.BaseChannelManager;
+import com.discordsrv.common.abstracted.channel.ChannelManager;
 import com.discordsrv.common.logging.Log;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class ChannelManagerImpl extends BaseChannelManager {
 
     @Override
     public void load() {
-        Map<String, Object> channelsFromConfig = DiscordSRV.get().getConfig().getMap("Channels");
-        getChannels().clear();
-        Log.debug("Loading channels from " + channelsFromConfig);
-        for (Map.Entry<String, Object> entry : channelsFromConfig.entrySet()) {
-            Set<String> channelsToLink = new HashSet<>();
-            if (entry.getValue() instanceof Collection) {
-                //noinspection unchecked
-                ((Collection) entry.getValue()).stream()
-                        .map(String::valueOf)
-                        .forEach(o -> channelsToLink.add((String) o));
-            } else {
-                channelsToLink.add(String.valueOf(entry.getValue()));
-            }
+        synchronized (ChannelManager.channels) {
+            ChannelManager.channels.clear();
+            Dynamic channels = DiscordSRV.getConfig().dget("Channels");
+            Log.debug("Loading channels from " + channels);
+            channels.children().forEach(definition -> {
+                String gameChannel = definition.get("Game").convert().intoString();
 
-            Log.debug("Channel " + entry.getKey() + " <-> " + channelsToLink);
-            //TODO plugin channel implementations
-            VanillaChannel channel = new VanillaChannel(channelsToLink);
-            getChannels().add(channel);
+                Set<String> discordChannels = new HashSet<>();
+                Dynamic dynamicDiscordChannels = definition.get("Discord");
+                if (dynamicDiscordChannels.isList()) {
+                    dynamicDiscordChannels.children()
+                            .map(d -> d.convert().intoString())
+                            .forEach(discordChannels::add);
+                } else {
+                    String raw = dynamicDiscordChannels.convert().intoString();
+                    if (raw.contains(",")) {
+                        Arrays.stream(raw.split(","))
+                                .map(String::trim)
+                                .filter(StringUtils::isNotBlank)
+                                .filter(StringUtils::isNumeric)
+                                .forEach(discordChannels::add);
+                    } else {
+                        raw = raw.trim();
+                        if (StringUtils.isNotBlank(raw) && StringUtils.isNumeric(raw)) {
+                            discordChannels.add(raw);
+                        }
+                    }
+                }
+
+                //TODO plugin channel implementations
+                Log.debug("Channel " + gameChannel + " <-> " + discordChannels);
+                getChannels().add(new VanillaChannel(gameChannel, discordChannels));
+            });
         }
     }
 

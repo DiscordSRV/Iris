@@ -18,7 +18,9 @@
 
 package com.discordsrv.common.abstracted.channel;
 
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.text.Component;
 
@@ -39,6 +41,15 @@ public interface Channel {
     void sendToDiscord(Message message);
     void sendToDiscord(Message message, Consumer<? super Message> success);
     void sendToDiscord(Message message, Consumer<? super Message> success, Consumer<? super Throwable> fail);
+    default void sendToDiscord(MessageEmbed embed) {
+        sendToDiscord(new MessageBuilder(embed).build());
+    }
+    default void sendToDiscord(MessageEmbed embed, Consumer<? super Message> success) {
+        sendToDiscord(new MessageBuilder(embed).build(), success);
+    }
+    default void sendToDiscord(MessageEmbed embed, Consumer<? super Message> success, Consumer<? super Throwable> fail) {
+        sendToDiscord(new MessageBuilder(embed).build(), success, fail);
+    }
     Set<Message> sendToDiscordNow(String message);
     Set<Message> sendToDiscordNow(Message message);
 

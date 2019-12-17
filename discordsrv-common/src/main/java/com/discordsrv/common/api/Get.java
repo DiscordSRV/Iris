@@ -16,29 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-repositories {
-    maven {
-        name = 'spigotmc-repo'
-        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
-    }
-}
+package com.discordsrv.common.api;
 
-dependencies {
-    compile project(':discordsrv-common')
-    provided 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
-    provided 'org.apache.logging.log4j:log4j-core:2.0-beta9'
-    compile 'org.slf4j:slf4j-jdk14:1.7.25'
-    compile 'net.kyori:text-adapter-bukkit:3.0.3' // kyori text adapter
-}
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        expand 'version': project.version
-    }
-}
+/**
+ * <p>Marks a {@link java.lang.reflect.Parameter} of an event listener to be populated with a getter from the event.</p>
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+public @interface Get {
 
-shadowJar {
-    dependencies {
-        include(dependency(':discordsrv-common'))
-    }
+    String name();
+
 }

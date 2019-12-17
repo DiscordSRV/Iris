@@ -21,6 +21,7 @@ package com.discordsrv.sponge;
 import com.discordsrv.common.DiscordSRV;
 import com.discordsrv.common.logging.Log;
 import com.discordsrv.sponge.impl.PluginManagerImpl;
+import com.discordsrv.sponge.impl.SchedulerImpl;
 import com.discordsrv.sponge.impl.ServerImpl;
 import com.discordsrv.sponge.impl.channel.ChannelManagerImpl;
 import com.discordsrv.sponge.listener.PlayerConnectionListener;
@@ -83,6 +84,7 @@ public class SpongePlugin implements com.discordsrv.common.logging.Logger {
                     .channelManager(new ChannelManagerImpl())
                     .pluginManager(new PluginManagerImpl())
                     .server(new ServerImpl())
+                    .scheduler(new SchedulerImpl())
                     .build();
         } catch (IOException e) {
             logger.error("I/O exception while saving configuration files");

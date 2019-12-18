@@ -1,15 +1,37 @@
 Channels:
-  - Discord: [417383230304550921]
+  - Inherit:
+      - Discord to Minecraft format: ""
+      - Minecraft to Discord format: ""
+  - Discord: [137421286501646336]
     Game: global
+  - Discord: [137421286501646336]
+    Game: connections
+  - Discord: [137421286501646336]
+    Game: deaths
+  - Discord: [137722245853347840]
+    Game: console
+
+Plugins:
+  Respect event cancelation: true
 
 Discord:
   Token: PASTE_YOU_BOT_TOKEN_HERE
 
-Webserver:
-  REST API:
+Chat:
+  Discord to Minecraft:
+    A: false
+  Minecraft to Discord:
+    Required message prefix: ""
+    Stripped phrases: ["@everyone"]
+
+Console:
+  Channel:
     Enabled: false
-    Port: 8500
-    Authentication:
-      Allow unauthenticated: false
-      Keys:
-        - SuperSecretPasswordThatYouBetterChangeIfYouEnableThis
+
+Linked accounts REST API:
+  Enabled: false
+  Port: 8500
+  Authentication:
+    Allow unauthenticated: false
+    Keys:
+      - SuperSecretPasswordThatYouBetterChangeIfYouEnableThis

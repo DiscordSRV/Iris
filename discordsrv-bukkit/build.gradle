@@ -25,10 +25,12 @@ repositories {
 
 dependencies {
     compile project(':discordsrv-common')
-    provided 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
+    provided 'org.bukkit:bukkit:1.15-R0.1-SNAPSHOT'
+//    provided 'org.bukkit:bukkit:1.14.4-R0.1-SNAPSHOT'
+//    provided 'org.bukkit:bukkit:1.8-R0.1-SNAPSHOT'
     provided 'org.apache.logging.log4j:log4j-core:2.0-beta9'
     compile 'org.slf4j:slf4j-jdk14:1.7.25'
-    compile 'net.kyori:text-adapter-bukkit:3.0.3' // kyori text adapter
+    compile 'net.kyori:text-adapter-bukkit:3.0.3'
 }
 
 processResources {

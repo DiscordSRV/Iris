@@ -25,22 +25,22 @@ import org.bukkit.Bukkit;
 public class SchedulerImpl implements Scheduler {
 
     @Override
-    public void runTaskLater(Runnable runnable, int delay) {
+    public void runTaskLater(Runnable runnable, long delay) {
         Bukkit.getScheduler().runTaskLater(BukkitPlugin.get(), runnable, delay);
     }
 
     @Override
-    public void runTaskRepeating(Runnable runnable, int delay, int period) {
+    public void runTaskRepeating(Runnable runnable, long delay, long period) {
         Bukkit.getScheduler().runTaskTimer(BukkitPlugin.get(), runnable, delay, period);
     }
 
     @Override
-    public void runTaskAsyncLater(Runnable runnable, int delay) {
+    public void runTaskAsyncLater(Runnable runnable, long delay) {
         Bukkit.getScheduler().runTaskLaterAsynchronously(BukkitPlugin.get(), runnable, delay);
     }
 
     @Override
-    public void runTaskAsyncRepeating(Runnable runnable, int delay, int period) {
+    public void runTaskAsyncRepeating(Runnable runnable, long delay, long period) {
         Bukkit.getScheduler().runTaskTimerAsynchronously(BukkitPlugin.get(), runnable, delay, period);
     }
 

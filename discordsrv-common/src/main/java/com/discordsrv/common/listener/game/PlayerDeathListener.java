@@ -40,7 +40,7 @@ public class PlayerDeathListener {
                 c.sendToDiscord(new EmbedBuilder()
                         .setColor(Color.DARK_GRAY)
                         .setTitle(Text.asPlain(event.getMessage()))
-                        .setFooter("\u200B", "https://crafatar.com/avatars/{uuid}?overlay".replace("{uuid}", player.getUuid().toString()))
+                        .setFooter("\u200B", "https://crafatar.com/avatars/{uuid}?size=48&overlay".replace("{uuid}", player.getUuid().toString()))
                         .build()
                 )
         );

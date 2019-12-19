@@ -60,4 +60,9 @@ public class PlayerImpl implements Player {
         TextAdapter.sendComponent(player, component);
     }
 
+    @Override
+    public boolean hasPermission(String node) {
+        return player.hasPermission(node);
+    }
+
 }

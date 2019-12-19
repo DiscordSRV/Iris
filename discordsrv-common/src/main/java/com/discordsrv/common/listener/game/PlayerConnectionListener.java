@@ -40,7 +40,7 @@ public class PlayerConnectionListener {
                 c.sendToDiscord(new EmbedBuilder()
                         .setColor(state == PlayerConnectionEvent.State.JOIN ? Color.GREEN : Color.RED)
                         .setTitle(Text.asPlain(event.getMessage()))
-                        .setFooter("\u200B", "https://crafatar.com/avatars/{uuid}?overlay".replace("{uuid}", event.getPlayer().getUuid().toString()))
+                        .setThumbnail("https://crafatar.com/avatars/{uuid}?size=48&overlay".replace("{uuid}", event.getPlayer().getUuid().toString()))
                         .build()
                 )
         );

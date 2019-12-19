@@ -29,5 +29,6 @@ public interface Player {
     UUID getUuid();
     boolean isVanished();
     void sendMessage(Component component);
+    boolean hasPermission(String node);
 
 }

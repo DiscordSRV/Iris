@@ -51,9 +51,23 @@ public class PlayerChatListener {
     @Subscribe(priority = ListenerPriority.MONITOR)
     public void onChat(PlayerChatEvent event, Channel channel, Player player, @Get(name="message") Component message) {
         Log.debug("Received " + (!event.willPublish() ? "NON-PUBLISHING " : "") + "chat event: " + player.getName() + " -> " + channel + " > " + Text.asPlain(message));
-        if (!event.willPublish()) return;
+        if (!event.willPublish() && DiscordSRV.getConfig().getBoolean("Plugins.Respect event cancellation")) return;
 
-        for (TextChannel textChannel : event.getChannel().getTargetChannels()) {
+        if (!player.hasPermission("discordsrv.chat")) {
+            Log.debug("Not processing message, player does not have the discordsrv.chat permission");
+            return;
+        }
+
+        if (!Text.asPlain(message).startsWith(DiscordSRV.getConfig().getString("Chat.Minecraft to Discord.Required message prefix"))) {
+            Log.debug("Not processing message, message does not start with the required prefix");
+            return;
+        }
+
+        //TODO strip message with "Chat.Minecraft to Discord.Stripped phrases"
+        //TODO PlaceholderAPI
+        //TODO translate @mentions
+
+        for (TextChannel textChannel : channel.getTargetChannels()) {
             textChannel.retrieveWebhooks().queue(webhooks -> {
                 List<Webhook> good = new ArrayList<>();
                 List<Webhook> bad = new ArrayList<>();
@@ -68,13 +82,13 @@ public class PlayerChatListener {
                 }
                 bad.forEach(w -> w.delete().queue(null, e -> Log.error("Failed to delete webhook " + w + ": " + e.getMessage())));
                 DiscordSRV.get().getScheduler().runTaskAsync(() -> {
-                    try {
-                        synchronized (lastUsedWebhook) {
-                            AtomicInteger counter = lastUsedWebhook.computeIfAbsent(textChannel.getId(), tc -> new AtomicInteger());
-                            int next = counter.intValue() != 1 ? 1 : 2;
-                            counter.set(next);
-                        }
+                    synchronized (lastUsedWebhook) {
+                        AtomicInteger counter = lastUsedWebhook.computeIfAbsent(textChannel.getId(), tc -> new AtomicInteger());
+                        int next = counter.intValue() != 1 ? 1 : 2;
+                        counter.set(next);
+                    }
 
+                    try {
                         for (int i = 0; i < 2; i++) {
                             if (good.size() < 2) {
                                 int number = good.size() == 0 ? 1 : 2;
@@ -82,30 +96,31 @@ public class PlayerChatListener {
                                 good.add(webhook);
                             }
                         }
-
-                        AtomicInteger counter = lastUsedWebhook.computeIfAbsent(textChannel.getId(), tc -> new AtomicInteger());
-                        int next = counter.intValue() != 1 ? 1 : 2;
-                        counter.set(next);
-
-                        Webhook webhook = good.get(next - 1);
-                        BoundRequestBuilder post = http.preparePost(webhook.getUrl());
-                        post.addBodyPart(new StringPart("content", Text.asPlain(message)));
-                        post.addBodyPart(new StringPart("username", player.getName()));
-                        post.addBodyPart(new StringPart("avatar_url", "https://crafatar.com/avatars/{uuid}?overlay".replace("{uuid}", player.getUuid().toString())));
-                        ListenableFuture<Response> future = post.execute();
-                        future.addListener(() -> {
-                            try {
-                                int code = future.get().getStatusCode();
-                                if (code != 204) {
-                                    Log.error("Received bad API response for webhook message delivery: " + code);
-                                }
-                            } catch (InterruptedException | ExecutionException e) {
-                                e.printStackTrace();
-                            }
-                        }, null);
                     } catch (PermissionException e) {
                         Log.error("Failed to create webhook for channel " + textChannel + ": " + e.getMessage());
+                        return;
                     }
+
+                    AtomicInteger counter = lastUsedWebhook.computeIfAbsent(textChannel.getId(), tc -> new AtomicInteger());
+                    int next = counter.intValue() != 1 ? 1 : 2;
+                    counter.set(next);
+                    Webhook webhook = good.get(next - 1);
+
+                    BoundRequestBuilder post = http.preparePost(webhook.getUrl());
+                    post.addBodyPart(new StringPart("content", Text.asPlain(message)));
+                    post.addBodyPart(new StringPart("username", player.getName()));
+                    post.addBodyPart(new StringPart("avatar_url", "https://crafatar.com/avatars/{uuid}?overlay".replace("{uuid}", player.getUuid().toString())));
+                    ListenableFuture<Response> future = post.execute();
+                    future.addListener(() -> {
+                        try {
+                            int code = future.get().getStatusCode();
+                            if (code != 204) {
+                                Log.error("Received bad API response for webhook message delivery: " + code);
+                            }
+                        } catch (InterruptedException | ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                    }, null);
                 });
             }, e -> Log.error("Failed to retrieve webhooks for channel " + textChannel + ": " + e.getMessage()));
         }

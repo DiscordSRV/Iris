@@ -76,6 +76,7 @@ public class EventBus {
      * @return the event that was called
      */
     public <E extends Event> E publish(E event) {
+        Log.debug("Event bus received event " + event.getClass().getSimpleName() + " -> " + event);
         for (ListenerPriority priority : ListenerPriority.values()) {
             for (Object listener : listeners) {
                 for (Method method : listener.getClass().getMethods()) {

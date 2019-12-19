@@ -70,9 +70,7 @@ public final class BukkitPlugin extends JavaPlugin implements Logger {
         }
 
         try {
-            Class<?> c = Class.forName("org.bukkit.event.player.PlayerAchievementAwardedEvent");
-            if (c.isAnnotationPresent(Deprecated.class)) throw new ClassNotFoundException();
-            Bukkit.getPluginManager().registerEvents(new PlayerAchievementListener(), this);
+            new PlayerAchievementListener().register();
         } catch (Exception ignored) {
             Bukkit.getPluginManager().registerEvents(new PlayerAdvancementListener(), this);
         }

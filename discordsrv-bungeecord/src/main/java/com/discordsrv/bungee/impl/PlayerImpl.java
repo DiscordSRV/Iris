@@ -58,4 +58,10 @@ public class PlayerImpl implements Player {
     public void sendMessage(Component component) {
         TextAdapter.sendComponent(proxiedPlayer, component);
     }
+
+    @Override
+    public boolean hasPermission(String node) {
+        return proxiedPlayer.hasPermission(node);
+    }
+
 }

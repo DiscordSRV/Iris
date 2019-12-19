@@ -34,8 +34,8 @@ repositories {
 dependencies {
     compile project(':discordsrv-common')
 
-    // gradle doesn't like 2 different versions of the same dependency, so we have to trick it (to support v6 as well as v7)
-    provided 'org.spongepowered:spongeapi:7.1.0'
+    // gradle doesn't like 2 different versions of the same dependency, so we have to trick it (to support v6/5 as well as v7/8+)
+    provided 'org.spongepowered:spongeapi:8.0.0-SNAPSHOT'
     provided 'org.spongepowered:spongeapi6:6.0.0' // from Scarsz' nexus
 
     compile 'net.kyori:text-adapter-spongeapi:3.0.3' // kyori text adapter

@@ -45,6 +45,7 @@ import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.scheduler.SpongeExecutorService;
+import org.spongepowered.api.text.LiteralText;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
@@ -67,6 +68,11 @@ import java.io.IOException;
         }
 )
 public class SpongePlugin implements com.discordsrv.common.logging.Logger {
+
+    /**
+     * Empty {@link Text} instance, compatible with SpongeAPI 7 and 8
+     */
+    public static final Text EMPTY_TEXT = LiteralText.builder().content("").build();
 
     @Inject @Getter @ConfigDir(sharedRoot = false) private File dataFolder;
     @Inject @Getter private Logger logger;

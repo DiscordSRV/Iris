@@ -30,7 +30,7 @@ public class NucleusBroadcastListener {
 
     @Listener(order = Order.POST)
     public void onBroadcast(NucleusTextTemplateEvent.Broadcast event) {
-        SpongePlugin.get().getAsyncExecutor().execute(() -> handle(event));
+        DiscordSRV.get().getScheduler().runTaskAsync(() -> handle(event));
     }
 
     private void handle(NucleusTextTemplateEvent.Broadcast event) {

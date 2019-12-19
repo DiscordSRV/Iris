@@ -19,7 +19,6 @@
 package com.discordsrv.sponge.listener.message;
 
 import com.discordsrv.common.DiscordSRV;
-import com.discordsrv.sponge.SpongePlugin;
 import com.discordsrv.sponge.event.SpongeMessageEvent;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
@@ -32,7 +31,7 @@ public class MessageListener {
     @Listener(order = Order.POST)
     @IsCancelled(value = Tristate.UNDEFINED)
     public void onMessage(MessageChannelEvent event) {
-        SpongePlugin.get().getAsyncExecutor().execute(() -> handle(event));
+        DiscordSRV.get().getScheduler().runTaskAsync(() -> handle(event));
     }
 
     private void handle(MessageChannelEvent event) {

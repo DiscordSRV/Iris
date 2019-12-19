@@ -25,14 +25,13 @@ import com.discordsrv.sponge.impl.event.PlayerAfkStatusChangeEventImpl;
 import io.github.nucleuspowered.nucleus.api.events.NucleusAFKEvent;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
-import org.spongepowered.api.text.Text;
 
 public class NucleusAfkListener {
 
     @Listener(order = Order.POST)
     public void onNucleusAfk(NucleusAFKEvent event) {
         if (event instanceof NucleusAFKEvent.GoingAFK || event instanceof NucleusAFKEvent.ReturningFromAFK) {
-            SpongePlugin.get().getAsyncExecutor().execute(() -> handle(event));
+            DiscordSRV.get().getScheduler().runTaskAsync(() -> handle(event));
         }
     }
 
@@ -42,7 +41,7 @@ public class NucleusAfkListener {
         SpongePlugin.get().getChannelManager().getChannel(event.getChannel()).ifPresent(channel ->
                 DiscordSRV.get().getEventBus().publish(new PlayerAfkStatusChangeEventImpl(
                         event instanceof NucleusAFKEvent.GoingAFK, new PlayerImpl(event.getTargetEntity()),
-                        SpongePlugin.serialize(event.getMessage().orElse(Text.EMPTY)), channel, false))
+                        SpongePlugin.serialize(event.getMessage().orElse(SpongePlugin.EMPTY_TEXT)), channel, false))
         );
     }
 }

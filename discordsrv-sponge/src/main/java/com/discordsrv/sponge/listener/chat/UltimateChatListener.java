@@ -30,7 +30,7 @@ public class UltimateChatListener {
 
     @Listener(order = Order.POST)
     public void onSendChannelMessage(SendChannelMessageEvent event) {
-        SpongePlugin.get().getAsyncExecutor().execute(() -> handle(event));
+        DiscordSRV.get().getScheduler().runTaskAsync(() -> handle(event));
     }
 
     private void handle(SendChannelMessageEvent event) {

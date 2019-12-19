@@ -33,9 +33,8 @@ import java.util.Optional;
 
 public class GenericMessageListener {
 
-    @Subscribe(priority = ListenerPriority.HIGH)
+    @Subscribe(priority = ListenerPriority.HIGH, ignoring = true)
     public void onMessage(SpongeMessageEvent event) {
-        if (event.isHandled()) return;
         handle(event.getEvent());
         event.setHandled(true);
     }

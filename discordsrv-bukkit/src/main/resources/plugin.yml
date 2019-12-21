@@ -1,5 +1,5 @@
 name: DiscordSRV
-version: Iris-1.0-SNAPSHOT
+version: @VERSION@
 main: com.discordsrv.bukkit.BukkitPlugin
 api-version: 1.13
 prefix: DiscordSRV

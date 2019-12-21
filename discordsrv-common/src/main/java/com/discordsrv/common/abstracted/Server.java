@@ -23,5 +23,6 @@ import java.util.Set;
 public interface Server {
 
     Set<Player> getOnlinePlayers();
+    void executeConsoleCommand(String command);
 
 }

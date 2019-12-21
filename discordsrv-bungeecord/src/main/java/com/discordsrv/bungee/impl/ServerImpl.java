@@ -33,4 +33,10 @@ public class ServerImpl implements Server {
                 .map(PlayerImpl::new)
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    public void executeConsoleCommand(String command) {
+        ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), command);
+    }
+
 }

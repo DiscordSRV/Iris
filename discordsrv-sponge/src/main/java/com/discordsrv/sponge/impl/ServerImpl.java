@@ -34,4 +34,9 @@ public class ServerImpl implements Server {
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    public void executeConsoleCommand(String command) {
+        Sponge.getCommandManager().process(Sponge.getServer().getConsole(), command);
+    }
+
 }

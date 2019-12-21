@@ -71,4 +71,9 @@ public class ServerImpl implements Server {
         }
     }
 
+    @Override
+    public void executeConsoleCommand(String command) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+    }
+
 }

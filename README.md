@@ -1,4 +1,4 @@
-![DiscordSRV Iris Logo](https://i.imgur.com/TWNX5dS.jpg)
+![DiscordSRV Iris Logo](https://i.imgur.com/3mxaj8p.png)
 
 [![Discord](https://discordapp.com/api/guilds/135634590575493120/widget.png)](https://scarsz.me/discord)
 [![Github last commit](https://img.shields.io/github/last-commit/DiscordSRV/Iris)](https://github.com/DiscordSRV/Iris/commits/master)

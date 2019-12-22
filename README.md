@@ -6,3 +6,7 @@
 ![Code size in bytes](https://img.shields.io/github/languages/code-size/DiscordSRV/Iris.svg)
 [![GitHub contributors](https://img.shields.io/github/contributors/DiscordSRV/Iris.svg)](https://github.com/DiscordSRV/Iris/graphs/contributors)
 <!-- [![License](https://img.shields.io/github/license/DiscordSRV/Iris.svg)](https://github.com/DiscordSRV/Iris/blob/master/LICENSE) -->
+
+### ETA: Summer 2020
+DiscordSRV Major Version 1 is available [here](https://github.com/DiscordSRV/DiscordSRV)  
+See [this project](https://github.com/DiscordSRV/Iris/projects/1) for our "To-Do list"    

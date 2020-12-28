@@ -1,8 +1,11 @@
 .gradle/
 .idea/
+.vscode/
 .settings/
 .classpath/
+.classpath
 .project/
+.project
 *.ipr
 *.iws
 
